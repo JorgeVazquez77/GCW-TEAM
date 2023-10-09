@@ -1,0 +1,39 @@
+.footer {
+    background-color: #959595;
+    color: rgb(72, 63, 63);
+    padding: 5px 1;
+    text-align: center;
+}
+
+body {
+    background-image: url("http://www.netanimations.net/HauntedHouseGhostsFloating-1.gif");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Esto evita que la imagen de fondo se desplace con el contenido */
+    opacity: 5;
+}
+
+h1{
+        font-size: 36px;
+        text-align: center;
+        color: #0ad5f9; /* Color del texto */
+        background-color: #000; /* Color de fondo */
+        padding: 20px; /* Espaciado alrededor del texto */
+        opacity: 0.7; /* Opacidad del texto (valores entre 0 y 1, donde 0 es completamente transparente y 1 es completamente opaco) */
+
+}
+
+label{
+    color: aqua;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #303336;
+    color: #fff;
+    text-decoration: none;
+    margin: 10px;
+    border-radius: 5px;
+}

@@ -1,0 +1,50 @@
+body {
+    background-image: url("http://www.netanimations.net/HauntedHouseGhostsFloating-1.gif");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Esto evita que la imagen de fondo se desplace con el contenido */
+    opacity: 5;
+}
+.scrollable-table {
+    max-height: 200px; /* Ajusta la altura máxima según sea necesario */
+    overflow-y: auto; /* Habilita la barra de desplazamiento vertical cuando el contenido excede la altura máxima */
+}
+
+table {
+    color: white; /* Cambia el color del texto a blanco */
+}
+
+/* Cambia el color del encabezado de la tabla */
+table th {
+    background-color: #1d2c3c; /* Cambia el fondo del encabezado */
+    color: white; /* Cambia el color del texto del encabezado a blanco */
+}
+
+/* Cambia el color del cuerpo de la tabla */
+table td {
+    background-color: #262c31; /* Cambia el fondo de las celdas de la tabla */
+    color: white; /* Cambia el color del texto en las celdas a blanco */
+}
+
+h2{
+
+    color: aqua;
+}
+
+.footer {
+    background-color: #959595;
+    color: rgb(72, 63, 63);
+    padding: 5px 1;
+    text-align: center;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #303336;
+    color: #fff;
+    text-decoration: none;
+    margin: 10px;
+    border-radius: 5px;
+}
