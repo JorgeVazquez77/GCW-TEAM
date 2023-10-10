@@ -7,45 +7,61 @@
     <style>
       body {
         margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      background-color: #34495E;
+      position: relative;
       }
+      .button-container {
+      margin-top: 20px; /* Espacio entre la parte superior y los botones */
+    }
+    .button {
+      padding: 10px 20px;
+      background-color: #073346;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .button:hover {
+      background-color: #2980b9;
+    }
     </style>
   </head>
   <body>
-    <button id="button-login">Login</button>
-    <button id="button-logout">Logout</button>
-
+    <div class="button-container">
+      <button id="button-login" class="button">Login</button>
+      <button id="button-logout" class="button">Logout</button>
+    <div class="button-container">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/three-gltf-loader/1.2.3/three-gltf-loader.min.js"></script>
     <script type="module">
       import * as THREE from "./three.module.js";
       import { OrbitControls } from "./OrbitControls.js";
 
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-      import {
-        getAuth,
-        GoogleAuthProvider,
-        signInWithPopup,
-        signOut,
-      } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
-      import {
-        getDatabase,
-        ref,
-        onValue,
-        set,
-      } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+/* import { getDatabase } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js"; */
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
 
-      // Your web app's Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyAmz0-6t9K1vSjxyuWZispaFInbSizEAK0",
-        authDomain: "coordenadas-5bd5d.firebaseapp.com",
-        databaseURL: "https://coordenadas-5bd5d-default-rtdb.firebaseio.com",
-        projectId: "coordenadas-5bd5d",
-        storageBucket: "coordenadas-5bd5d.appspot.com",
-        messagingSenderId: "32492455647",
-        appId: "1:32492455647:web:6a64177cfddbc857320b6a",
-      };
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBjEy-28MDlsIZFBXa4mjsJq3IFEEW05CM",
+  authDomain: "coordenadas-543fe.firebaseapp.com",
+  databaseURL: "https://coordenadas-543fe-default-rtdb.firebaseio.com",
+  projectId: "coordenadas-543fe",
+  storageBucket: "coordenadas-543fe.appspot.com",
+  messagingSenderId: "666615755785",
+  appId: "1:666615755785:web:97365a60650d454e7db4d8"
+};
 
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
       // Initialize Firebase Authentication and get a reference to the service
       const auth = getAuth(app);
