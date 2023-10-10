@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multijugador</title>
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="button-login">Login</button>
+    <button id="button-logout">Logout</button>
+
+    <script type="module">
+      import * as THREE from "./three.module.js";
+      import { OrbitControls } from "./OrbitControls.js";
+
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+      import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithPopup,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        onValue,
+        set,
+      } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAmz0-6t9K1vSjxyuWZispaFInbSizEAK0",
+        authDomain: "coordenadas-5bd5d.firebaseapp.com",
+        databaseURL: "https://coordenadas-5bd5d-default-rtdb.firebaseio.com",
+        projectId: "coordenadas-5bd5d",
+        storageBucket: "coordenadas-5bd5d.appspot.com",
+        messagingSenderId: "32492455647",
+        appId: "1:32492455647:web:6a64177cfddbc857320b6a",
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+
+      // Initialize Firebase Authentication and get a reference to the service
+      const auth = getAuth(app);
+      auth.languageCode = "es";
+
+      const provider = new GoogleAuthProvider();
+
+      // Initialize Realtime Database and get a reference to the service
+      const db = getDatabase();
+
+      let currentUser;
+      async function login() {
+        await signInWithPopup(auth, provider)
+          .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            // The signed-in user info.
+            currentUser = result.user;
+            console.log(currentUser);
+            writeUserData(currentUser.uid, 0, 0);
+          })
+          .catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.customData.email;
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+            console.log(error);
+          });
+      }
+
+      const buttonLogin = document.getElementById("button-login");
+      const buttonLogout = document.getElementById("button-logout");
+
+      buttonLogin.addEventListener("click", async () => {
+        await login();
+      });
+
+      buttonLogout.addEventListener("click", async () => {
+        await signOut(auth)
+          .then(() => {
+            // Sign-out successful.
+            console.log("Sign-out successful");
+          })
+          .catch((error) => {
+            // An error happened.
+            console.log("An error happened");
+          });
+      });
+
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color("#34495E");
+
+      const camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight
+      );
+
+      camera.position.set(0, 0, 10);
+
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true;
+      document.body.appendChild(renderer.domElement);
+
+      const hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
+      scene.add(hemisphereLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(1, 5, -1);
+      directionalLight.castShadow = true;
+      scene.add(directionalLight);
+
+      const planeGeometry = new THREE.PlaneGeometry(50, 50);
+      const planeMaterial = new THREE.MeshStandardMaterial({
+        color: "slategrey",
+      });
+      const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+      plane.receiveShadow = true;
+      plane.rotateX(-Math.PI / 2);
+      plane.position.set(0, -0.5, 0);
+
+      // Leer
+      const starCountRef = ref(db, "jugadores");
+      onValue(starCountRef, (snapshot) => {
+        const data = snapshot.val();
+
+        Object.entries(data).forEach(([key, value]) => {
+          console.log(`${key} ${value.x} ${value.z}`);
+
+          const jugador = scene.getObjectByName(key);
+          if (!jugador) {
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshPhongMaterial();
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.castShadow = true;
+            mesh.position.set(value.x, 0, value.z);
+            mesh.material.color = new THREE.Color(Math.random() * 0xffffff);
+            mesh.name = key;
+            scene.add(mesh);
+          }
+
+          scene.getObjectByName(key).position.x = value.x;
+          scene.getObjectByName(key).position.z = value.z;
+        });
+      });
+
+      //Escribir
+      function writeUserData(userId, positionX, positionZ) {
+        set(ref(db, "jugadores/" + userId), {
+          x: positionX,
+          z: positionZ,
+        });
+      }
+
+      function resize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.render(scene, camera);
+      }
+
+      window.addEventListener("resize", resize);
+
+      document.onkeydown = function (e) {
+        const jugadorActual = scene.getObjectByName(currentUser.uid);
+
+        if (e.keyCode == 37) {
+          jugadorActual.position.x -= 1;
+        }
+
+        if (e.keyCode == 39) {
+          jugadorActual.position.x += 1;
+        }
+
+        if (e.keyCode == 38) {
+          jugadorActual.position.z -= 1;
+        }
+
+        if (e.keyCode == 40) {
+          jugadorActual.position.z += 1;
+        }
+
+        writeUserData(
+          currentUser.uid,
+          jugadorActual.position.x,
+          jugadorActual.position.z
+        );
+      };
+
+      scene.add(plane);
+
+      const cameraControl = new OrbitControls(camera, renderer.domElement);
+
+      function animate() {
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>
