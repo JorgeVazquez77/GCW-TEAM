@@ -157,23 +157,25 @@ const app = initializeApp(firebaseConfig);
       const starCountRef = ref(db, "jugadores");
       onValue(starCountRef, (snapshot) => {
         const data = snapshot.val();
-
         Object.entries(data).forEach(([key, value]) => {
           console.log(`${key} ${value.x} ${value.z}`);
-
           const jugador = scene.getObjectByName(key);
-          
           if (!jugador) {
-            const geometry = new THREE.BoxGeometry(1, 1, 1);
-            const material = new THREE.MeshPhongMaterial();
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.castShadow = true;
-            mesh.position.set(value.x, 0, value.z);
-            mesh.material.color = new THREE.Color(Math.random() * 0xffffff);
-            mesh.name = key;
-            scene.add(mesh);
+            const loaderGLTF = new GLTFLoader();
+            loaderGLTF.load(
+              "fantasma_ghost_phantom.glb",
+              function (modelGLTF) {
+                const obj = modelGLTF.scene;
+                obj.scale.set(1,1,1);
+                obj.position.set(value.x,0,value.z);
+                obj.name = key;
+               /*  obj.rotateX(Math.PI*1.5);
+                obj.rotateZ(Math.PI*2.5); */
+                obj.castShadow = true;
+                scene.add(obj);
+              }
+            );
           }
-
           scene.getObjectByName(key).position.x = value.x;
           scene.getObjectByName(key).position.z = value.z;
         });
