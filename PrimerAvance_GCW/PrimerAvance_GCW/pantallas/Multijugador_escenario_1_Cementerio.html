@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multijugador</title>
+    <style>
+      body {
+        margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      background-color: #34495E;
+      position: relative;
+      }
+      .button-container {
+      margin-top: 20px; /* Espacio entre la parte superior y los botones */
+    }
+    .button {
+      padding: 10px 20px;
+      background-color: #073346;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .button:hover {
+      background-color: #2980b9;
+    }
+    </style>
+  </head>
+  <body>
+    
+    <div class="button-container">
+      <button id="button-login" class="button">Login</button>
+      <button id="button-logout" class="button">Logout</button>
+    </div>
+    <div class="button-container">
+        <a href="Pausa.html" class="button">Pausa</a>
+
+    </div>
+    <div class="button-container">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/three-gltf-loader/1.2.3/three-gltf-loader.min.js"></script>
+    <script type="module">
+      import * as THREE from "./three.module.js";
+      import { OrbitControls } from "./OrbitControls.js";
+      import { GLTFLoader } from "./GLTFLoader.js";
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+/* import { getDatabase } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js"; */
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBjEy-28MDlsIZFBXa4mjsJq3IFEEW05CM",
+  authDomain: "coordenadas-543fe.firebaseapp.com",
+  databaseURL: "https://coordenadas-543fe-default-rtdb.firebaseio.com",
+  projectId: "coordenadas-543fe",
+  storageBucket: "coordenadas-543fe.appspot.com",
+  messagingSenderId: "666615755785",
+  appId: "1:666615755785:web:97365a60650d454e7db4d8"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+      // Initialize Firebase Authentication and get a reference to the service
+      const auth = getAuth(app);
+      auth.languageCode = "es";
+
+      const provider = new GoogleAuthProvider();
+
+      // Initialize Realtime Database and get a reference to the service
+      const db = getDatabase();
+
+      let currentUser;
+      async function login() {
+        await signInWithPopup(auth, provider)
+          .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            // The signed-in user info.
+            currentUser = result.user;
+            console.log(currentUser);
+            writeUserData(currentUser.uid, 0, 0);
+          })
+          .catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.customData.email;
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+            console.log(error);
+          });
+      }
+
+      const buttonLogin = document.getElementById("button-login");
+      const buttonLogout = document.getElementById("button-logout");
+
+      buttonLogin.addEventListener("click", async () => {
+        await login();
+      });
+
+      buttonLogout.addEventListener("click", async () => {
+        await signOut(auth)
+          .then(() => {
+            // Sign-out successful.
+            console.log("Sign-out successful");
+          })
+          .catch((error) => {
+            // An error happened.
+            console.log("An error happened");
+          });
+      });
+
+      const scene = new THREE.Scene();
+      //scene.background = new THREE.Color("black");
+
+      const loader = new THREE.TextureLoader();
+      loader.load("NightSky.jpg", function (texture) {
+        scene.background = texture;
+      });
+
+
+
+
+
+      const camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight
+      );
+
+      camera.position.set(0, 80, 150);
+
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true;
+      document.body.appendChild(renderer.domElement);
+
+      const hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
+      scene.add(hemisphereLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(1, 5, -1);
+      directionalLight.castShadow = true;
+      scene.add(directionalLight);
+
+      const planeGeometry = new THREE.PlaneGeometry(150, 150);
+      const planeMaterial = new THREE.MeshStandardMaterial({
+        color: "#1B3821",
+      });
+      const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+      plane.receiveShadow = true;
+      plane.rotateX(-Math.PI / 2);
+      plane.position.set(0, -0.5, 0);
+
+      // Leer
+      const starCountRef = ref(db, "jugadores");
+      onValue(starCountRef, (snapshot) => {
+        const data = snapshot.val();
+        Object.entries(data).forEach(([key, value]) => {
+          console.log(`${key} ${value.x} ${value.z}`);
+          const jugador = scene.getObjectByName(key);
+          if (!jugador) {
+            const loaderGLTF = new GLTFLoader();
+            loaderGLTF.load(
+              "fantasma_ghost_phantom.glb",
+              function (modelGLTF) {
+                const obj = modelGLTF.scene;
+                obj.scale.set(1,1,1);
+                obj.position.set(value.x,0,value.z);
+                obj.name = key;
+               /*  obj.rotateX(Math.PI*1.5);
+                obj.rotateZ(Math.PI*2.5); */
+                obj.castShadow = true;
+                scene.add(obj);
+              }
+            );
+            const Cementerio = new GLTFLoader();
+            loaderGLTF.load(
+              "Cementerio.glb",
+              function (modelGLTF) {
+                const obj1 = modelGLTF.scene;
+                obj1.scale.set(6,6,6);
+                obj1.position.set(-40,0,0);
+                obj1.name = key;
+                obj1.castShadow = true;
+                scene.add(obj1);
+              }
+            );
+
+          }
+          scene.getObjectByName(key).position.x = value.x;
+          scene.getObjectByName(key).position.z = value.z;
+        });
+      });
+
+      //Escribir
+      function writeUserData(userId, positionX, positionZ) {
+        set(ref(db, "jugadores/" + userId), {
+          x: positionX,
+          z: positionZ,
+        });
+      }
+
+      function resize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.render(scene, camera);
+      }
+
+      window.addEventListener("resize", resize);
+
+      document.onkeydown = function (e) {
+        const jugadorActual = scene.getObjectByName(currentUser.uid);
+
+        if (e.keyCode == 37) {
+          jugadorActual.position.x -= 1;
+        }
+
+        if (e.keyCode == 39) {
+          jugadorActual.position.x += 1;
+        }
+
+        if (e.keyCode == 38) {
+          jugadorActual.position.z -= 1;
+        }
+
+        if (e.keyCode == 40) {
+          jugadorActual.position.z += 1;
+        }
+
+        writeUserData(
+          currentUser.uid,
+          jugadorActual.position.x,
+          jugadorActual.position.z
+        );
+      };
+
+      scene.add(plane);
+
+      const cameraControl = new OrbitControls(camera, renderer.domElement);
+
+      function animate() {
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>
