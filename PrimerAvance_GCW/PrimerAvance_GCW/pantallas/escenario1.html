@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Multijugador</title>
+    <title>Escenario1</title>
     <style>
       body {
         margin: 0;
@@ -49,77 +49,6 @@
       import * as THREE from "./three.module.js";
       import { OrbitControls } from "./OrbitControls.js";
       import { GLTFLoader } from "./GLTFLoader.js";
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
-/* import { getDatabase } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js"; */
-import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyBjEy-28MDlsIZFBXa4mjsJq3IFEEW05CM",
-  authDomain: "coordenadas-543fe.firebaseapp.com",
-  databaseURL: "https://coordenadas-543fe-default-rtdb.firebaseio.com",
-  projectId: "coordenadas-543fe",
-  storageBucket: "coordenadas-543fe.appspot.com",
-  messagingSenderId: "666615755785",
-  appId: "1:666615755785:web:97365a60650d454e7db4d8"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-      // Initialize Firebase Authentication and get a reference to the service
-      const auth = getAuth(app);
-      auth.languageCode = "es";
-
-      const provider = new GoogleAuthProvider();
-
-      // Initialize Realtime Database and get a reference to the service
-      const db = getDatabase();
-
-      let currentUser;
-      async function login() {
-        await signInWithPopup(auth, provider)
-          .then((result) => {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
-            // The signed-in user info.
-            currentUser = result.user;
-            console.log(currentUser);
-            writeUserData(currentUser.uid, 0, 0);
-          })
-          .catch((error) => {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.customData.email;
-            // The AuthCredential type that was used.
-            const credential = GoogleAuthProvider.credentialFromError(error);
-            console.log(error);
-          });
-      }
-
-      const buttonLogin = document.getElementById("button-login");
-      const buttonLogout = document.getElementById("button-logout");
-
-      buttonLogin.addEventListener("click", async () => {
-        await login();
-      });
-
-      buttonLogout.addEventListener("click", async () => {
-        await signOut(auth)
-          .then(() => {
-            // Sign-out successful.
-            console.log("Sign-out successful");
-          })
-          .catch((error) => {
-            // An error happened.
-            console.log("An error happened");
-          });
-      });
 
       const scene = new THREE.Scene();
       //scene.background = new THREE.Color("black");
@@ -128,17 +57,12 @@ const app = initializeApp(firebaseConfig);
       loader.load("NightSky.jpg", function (texture) {
         scene.background = texture;
       });
-
-
-
-
-
       const camera = new THREE.PerspectiveCamera(
         60,
         window.innerWidth / window.innerHeight
       );
 
-      camera.position.set(0, 70, 150);
+      camera.position.set(0, 80, 150);
 
       const renderer = new THREE.WebGLRenderer();
       renderer.setSize(window.innerWidth, window.innerHeight);
@@ -160,49 +84,43 @@ const app = initializeApp(firebaseConfig);
       const plane = new THREE.Mesh(planeGeometry, planeMaterial);
       plane.receiveShadow = true;
       plane.rotateX(-Math.PI / 2);
-      plane.position.set(0, -1, 0);
+      plane.position.set(0, -0.5, 0);
 
-      // Leer
-      const starCountRef = ref(db, "jugadores");
-      onValue(starCountRef, (snapshot) => {
-        const data = snapshot.val();
-        Object.entries(data).forEach(([key, value]) => {
-          console.log(`${key} ${value.x} ${value.z}`);
-          const jugador = scene.getObjectByName(key);
-          if (!jugador) {
+//jugador
+let ghost_position=[0,0,0];
+const jugador = scene.getObjectByName("player");
             const loaderGLTF = new GLTFLoader();
             loaderGLTF.load(
               "fantasma_ghost_phantom.glb",
               function (modelGLTF) {
                 const obj = modelGLTF.scene;
                 obj.scale.set(1,1,1);
-                obj.position.set(value.x,0,value.z);
-                obj.name = key;
+                obj.position.set(ghost_position[0],ghost_position[1],ghost_position[2]);
                /*  obj.rotateX(Math.PI*1.5);
                 obj.rotateZ(Math.PI*2.5); */
+                obj.name="player";
                 obj.castShadow = true;
                 scene.add(obj);
-              }
+            }
             );
-            const CementerioEntrada = new GLTFLoader();
+            const Cementerio = new GLTFLoader();
             loaderGLTF.load(
-              "BosqueEncantado.glb",
+              "Cementerio.glb",
               function (modelGLTF) {
                 const obj1 = modelGLTF.scene;
-                obj1.scale.set(1,1,1);
-                obj1.position.set(0,7,0);
-                obj1.name = key;
+                obj1.scale.set(6,6,6);
+                obj1.position.set(-40,0,0);
                 obj1.castShadow = true;
                 scene.add(obj1);
               }
             );
-            //cuervo1 con animacion
+//cuervo1 con animacion
 const loaderGLTFa = new GLTFLoader();
 loaderGLTFa.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
 function(modelGLTFa){
   const obj2 = modelGLTFa.scene;
   obj2.scale.set(.5,.5,.5);
-  obj2.position.set(80,30,5);
+  obj2.position.set(-10,10,5);
 
   const mixer = new THREE.AnimationMixer(obj2);
   const clip = modelGLTFa.animations[0];
@@ -228,7 +146,7 @@ loaderGLTFb.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
 function(modelGLTFa){
   const obj2 = modelGLTFa.scene;
   obj2.scale.set(.5,.5,.5);
-  obj2.position.set(20,30,20);
+  obj2.position.set(20,10,20);
 
   const mixer = new THREE.AnimationMixer(obj2);
   const clip = modelGLTFa.animations[0];
@@ -247,6 +165,7 @@ function animatea(){
 }
 animatea();
 });
+
 
 //cuervo3 con animacion
 const loaderGLTFc = new GLTFLoader();
@@ -254,7 +173,7 @@ loaderGLTFc.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
 function(modelGLTFa){
   const obj2 = modelGLTFa.scene;
   obj2.scale.set(.5,.5,.5);
-  obj2.position.set(60,30,40);
+  obj2.position.set(0,10,40);
 
   const mixer = new THREE.AnimationMixer(obj2);
   const clip = modelGLTFa.animations[0];
@@ -272,47 +191,9 @@ function animatea(){
   
 }
 animatea();
+return obj2;
 });
 
-
-//cuervo4 con animacion
-const loaderGLTFd = new GLTFLoader();
-loaderGLTFd.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
-function(modelGLTFa){
-  const obj2 = modelGLTFa.scene;
-  obj2.scale.set(.5,.5,.5);
-  obj2.position.set(20,30,60);
-
-  const mixer = new THREE.AnimationMixer(obj2);
-  const clip = modelGLTFa.animations[0];
-  const action = mixer.clipAction(clip);
-  action.play();
-  scene.add(obj2);
-
-function animatea(){
-  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
-  //checkCollisions();
-  requestAnimationFrame(animatea);
-  //movimiento cuervo lado a lado
-  mixer.update(0.1);
-  renderer.render(scene, camera);
-  
-}
-animatea();
-});
-          }
-          scene.getObjectByName(key).position.x = value.x;
-          scene.getObjectByName(key).position.z = value.z;
-        });
-      });
-
-      //Escribir
-      function writeUserData(userId, positionX, positionZ) {
-        set(ref(db, "jugadores/" + userId), {
-          x: positionX,
-          z: positionZ,
-        });
-      }
 
       function resize() {
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -324,29 +205,32 @@ animatea();
       window.addEventListener("resize", resize);
 
       document.onkeydown = function (e) {
-        const jugadorActual = scene.getObjectByName(currentUser.uid);
 
         if (e.keyCode == 37) {
-          jugadorActual.position.x -= 1;
+          ghost_position[0]-=1;
+          //console.log(ghost_position[0]);
+          scene.getObjectByName("player").position.x = ghost_position[0];
+
         }
 
         if (e.keyCode == 39) {
-          jugadorActual.position.x += 1;
+          ghost_position[0]+=1;
+          //console.log(ghost_position[0]);
+          scene.getObjectByName("player").position.x = ghost_position[0];
         }
 
         if (e.keyCode == 38) {
-          jugadorActual.position.z -= 1;
+          ghost_position[2]-=1;
+          //console.log(ghost_position[2]);
+          scene.getObjectByName("player").position.z = ghost_position[2];
         }
 
         if (e.keyCode == 40) {
-          jugadorActual.position.z += 1;
+          ghost_position[2]+=1;
+          //console.log(ghost_position[2]);
+          scene.getObjectByName("player").position.z = ghost_position[2];
         }
 
-        writeUserData(
-          currentUser.uid,
-          jugadorActual.position.x,
-          jugadorActual.position.z
-        );
       };
 
       scene.add(plane);
@@ -356,6 +240,7 @@ animatea();
       function animate() {
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
+
       }
 
       animate();

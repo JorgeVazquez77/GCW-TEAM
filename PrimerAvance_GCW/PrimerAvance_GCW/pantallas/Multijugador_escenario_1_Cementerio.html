@@ -196,6 +196,85 @@ const app = initializeApp(firebaseConfig);
                 scene.add(obj1);
               }
             );
+//cuervo1 con animacion
+const loaderGLTFa = new GLTFLoader();
+loaderGLTFa.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
+function(modelGLTFa){
+  const obj2 = modelGLTFa.scene;
+  obj2.scale.set(.5,.5,.5);
+  obj2.position.set(-10,10,5);
+
+  const mixer = new THREE.AnimationMixer(obj2);
+  const clip = modelGLTFa.animations[0];
+  const action = mixer.clipAction(clip);
+  action.play();
+  scene.add(obj2);
+
+function animatea(){
+  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
+  //checkCollisions();
+  requestAnimationFrame(animatea);
+  //movimiento cuervo lado a lado
+  mixer.update(0.1);
+  renderer.render(scene, camera);
+  
+}
+animatea();
+});
+
+//cuervo2 con animacion
+const loaderGLTFb = new GLTFLoader();
+loaderGLTFb.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
+function(modelGLTFa){
+  const obj2 = modelGLTFa.scene;
+  obj2.scale.set(.5,.5,.5);
+  obj2.position.set(20,10,20);
+
+  const mixer = new THREE.AnimationMixer(obj2);
+  const clip = modelGLTFa.animations[0];
+  const action = mixer.clipAction(clip);
+  action.play();
+  scene.add(obj2);
+
+function animatea(){
+  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
+  //checkCollisions();
+  requestAnimationFrame(animatea);
+  //movimiento cuervo lado a lado
+  mixer.update(0.1);
+  renderer.render(scene, camera);
+  
+}
+animatea();
+});
+
+//cuervo3 con animacion
+const loaderGLTFc = new GLTFLoader();
+loaderGLTFc.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
+function(modelGLTFa){
+  const obj2 = modelGLTFa.scene;
+  obj2.scale.set(.5,.5,.5);
+  obj2.position.set(0,10,40);
+
+  const mixer = new THREE.AnimationMixer(obj2);
+  const clip = modelGLTFa.animations[0];
+  const action = mixer.clipAction(clip);
+  action.play();
+  scene.add(obj2);
+
+function animatea(){
+  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
+  //checkCollisions();
+  requestAnimationFrame(animatea);
+  //movimiento cuervo lado a lado
+  mixer.update(0.1);
+  renderer.render(scene, camera);
+  
+}
+animatea();
+});
+
+
 
           }
           scene.getObjectByName(key).position.x = value.x;
@@ -253,6 +332,7 @@ const app = initializeApp(firebaseConfig);
       function animate() {
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
+
       }
 
       animate();

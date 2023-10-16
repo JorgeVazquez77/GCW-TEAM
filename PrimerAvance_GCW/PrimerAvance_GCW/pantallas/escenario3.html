@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Escenario2</title>
+    <style>
+      body {
+        margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      background-color: #34495E;
+      position: relative;
+      }
+      .button-container {
+      margin-top: 20px; /* Espacio entre la parte superior y los botones */
+    }
+    .button {
+      padding: 10px 20px;
+      background-color: #073346;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .button:hover {
+      background-color: #2980b9;
+    }
+    </style>
+  </head>
+  <body>
+    
+    <div class="button-container">
+      <button id="button-login" class="button">Login</button>
+      <button id="button-logout" class="button">Logout</button>
+    </div>
+    <div class="button-container">
+        <a href="Pausa.html" class="button">Pausa</a>
+
+    </div>
+    <div class="button-container">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/three-gltf-loader/1.2.3/three-gltf-loader.min.js"></script>
+    <script type="module">
+      import * as THREE from "./three.module.js";
+      import { OrbitControls } from "./OrbitControls.js";
+      import { GLTFLoader } from "./GLTFLoader.js";
+
+      const scene = new THREE.Scene();
+      //scene.background = new THREE.Color("black");
+
+      const loader = new THREE.TextureLoader();
+      loader.load("NightSky.jpg", function (texture) {
+        scene.background = texture;
+      });
+      const camera = new THREE.PerspectiveCamera(
+        60,
+        window.innerWidth / window.innerHeight
+      );
+
+      camera.position.set(0, 80, 150);
+
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true;
+      document.body.appendChild(renderer.domElement);
+
+      const hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
+      scene.add(hemisphereLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(1, 5, -1);
+      directionalLight.castShadow = true;
+      scene.add(directionalLight);
+
+      const planeGeometry = new THREE.PlaneGeometry(150,120);
+      const planeMaterial = new THREE.MeshStandardMaterial({
+        color: "#38261B",
+      });
+      const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+      plane.receiveShadow = true;
+      plane.rotateX(-Math.PI / 2);
+      plane.position.set(0, -0.5, -20);
+
+//jugador
+let ghost_position=[10,0,0];
+const jugador = scene.getObjectByName("player");
+            const loaderGLTF = new GLTFLoader();
+            loaderGLTF.load(
+              "fantasma_ghost_phantom.glb",
+              function (modelGLTF) {
+                const obj = modelGLTF.scene;
+                obj.scale.set(2,2,2);
+                obj.position.set(ghost_position[0],ghost_position[1],ghost_position[2]);
+               /*  obj.rotateX(Math.PI*1.5);
+                obj.rotateZ(Math.PI*2.5); */
+                obj.name="player";
+                obj.castShadow = true;
+                scene.add(obj);
+            }
+            );
+            const Cementerio = new GLTFLoader();
+            loaderGLTF.load(
+              "CasaEmbrujada.glb",
+              function (modelGLTF) {
+                const obj1 = modelGLTF.scene;
+                obj1.scale.set(1.3,1.3,1.3);
+                obj1.position.set(0,-3,30);
+                obj1.castShadow = true;
+                scene.add(obj1);
+              }
+            );
+
+
+const Arboles = new GLTFLoader();
+            loaderGLTF.load(
+              "low-poly_trees2.glb",
+              function (modelGLTF) {
+                const obj3 = modelGLTF.scene;
+                obj3.scale.set(.5,.5,.5);
+                obj3.position.set(-60,0,15);
+                
+                obj3.castShadow = true;
+                scene.add(obj3);
+              }
+            );
+            const Arboles2 = new GLTFLoader();
+            loaderGLTF.load(
+              "low-poly_trees2.glb",
+              function (modelGLTF) {
+                const arboles2 = modelGLTF.scene;
+                arboles2.scale.set(.5,.5,.5);
+                arboles2.position.set(30,0,15);
+              
+                arboles2.castShadow = true;
+                scene.add(arboles2);
+              }
+            );
+            const Arboles3 = new GLTFLoader();
+            loaderGLTF.load(
+              "low-poly_trees2.glb",
+              function (modelGLTF) {
+                const arboles3 = modelGLTF.scene;
+                arboles3.scale.set(.7,.7,.7);
+                arboles3.position.set(20,0,-85);
+       
+                arboles3.castShadow = true;
+                scene.add(arboles3);
+              }
+            );
+            const Arboles4 = new GLTFLoader();
+            loaderGLTF.load(
+              "low-poly_trees2.glb",
+              function (modelGLTF) {
+                const arboles4 = modelGLTF.scene;
+                arboles4.scale.set(.7,.7,.7);
+                arboles4.position.set(-10,0,-85);
+    
+                arboles4.castShadow = true;
+                scene.add(arboles4);
+              }
+            );
+               const Arboles5 = new GLTFLoader();
+            loaderGLTF.load(
+              "low-poly_trees2.glb",
+              function (modelGLTF) {
+                const arboles5 = modelGLTF.scene;
+                arboles5.scale.set(.9,.9,.9);
+                arboles5.position.set(-60,0,-95);
+        
+                arboles5.castShadow = true;
+                scene.add(arboles5);
+              }
+            );
+      function resize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.render(scene, camera);
+      }
+
+      window.addEventListener("resize", resize);
+
+      document.onkeydown = function (e) {
+
+        if (e.keyCode == 37) {
+          ghost_position[0]-=1;
+          //console.log(ghost_position[0]);
+          scene.getObjectByName("player").position.x = ghost_position[0];
+
+        }
+
+        if (e.keyCode == 39) {
+          ghost_position[0]+=1;
+          //console.log(ghost_position[0]);
+          scene.getObjectByName("player").position.x = ghost_position[0];
+        }
+
+        if (e.keyCode == 38) {
+          ghost_position[2]-=1;
+          //console.log(ghost_position[2]);
+          scene.getObjectByName("player").position.z = ghost_position[2];
+        }
+
+        if (e.keyCode == 40) {
+          ghost_position[2]+=1;
+          //console.log(ghost_position[2]);
+          scene.getObjectByName("player").position.z = ghost_position[2];
+        }
+
+      };
+
+      
+      scene.add(plane);
+      const cameraControl = new OrbitControls(camera, renderer.domElement);
+
+      function animate() {
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+
+      }
+
+      animate();
+    </script>
+  </body>
+</html>
