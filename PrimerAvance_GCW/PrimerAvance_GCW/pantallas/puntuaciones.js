@@ -1,8 +1,10 @@
 //clase
 class Puntuacion{
-    constructor(ID,nombre,precio){
+    constructor(ID_usuario,ID,Nombre,Puntos){
+        this.ID_usuario=ID_usuario;
         this.ID=ID;
-        this.nombre=nombre;
+        this.Nombre=Nombre;
+        this.Puntos=Puntos;
     }
 
     // metodo para agregar las nuevas filas
@@ -11,13 +13,14 @@ class Puntuacion{
         let row = document.createElement("tr");
     //las comillas francesas indican que el texto es puro html
         row.innerHTML = `
-            <td>${this.ID}</td>
-            <td>${this.nombre}</td>
-            <td><button id="${this.ID}" name="delete" onclick="EliminarDB()">Eliminar</button></td>
+            <td>${this.ID_usuario}</td>
+            <td>${this.Nombre}</td>
+            <td>${this.Puntos}</td>
+            
         `;
         return row;
       }
-
+//<td><button class="button" id="${this.ID}" name="delete" onclick="EliminarDB()">Eliminar</button></td>
 }
 
 
@@ -44,7 +47,7 @@ tableBod.appendChild(producto.descripcion);
 //practica 4
 //tiene que ser una función asíncrona para que se pueda completar el request antes de que ya lo queramos utilizar, también por eso se usa el prefijo await 
 async function ontenerProductosDB(){
-let response= await fetch("http://localhost/ServicioProductos/productos.php");
+let response= await fetch("http://localhost/GCW-TEAM/PrimerAvance_GCW/PrimerAvance_GCW/pantallas/puntuaciones.php");
 //la respuesta se transforma a formato json para poder accsesar los atributos de nuestra tabla}
 
 let responseJSON=await response.json();
@@ -52,7 +55,7 @@ let responseJSON=await response.json();
 
 responseJSON.forEach(p => {
 
-    let nuevoProducto=new Puntuacion(p.ID,p.nombre);
+    let nuevoProducto=new Puntuacion(p.ID_usuario,p.ID,p.Nombre,p.Puntos);
     //para agregarlo al arreglo de productos
     productos.push(nuevoProducto);
 

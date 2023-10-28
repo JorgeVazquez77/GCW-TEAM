@@ -14,17 +14,65 @@
     <h2 class="text-center">Tabla de Puntuaciones</h2>
     <div class="scrollable-table">
     
-
+        <form action="" method="">
     <table cellspacing="10" cellpadding="5" class="table table-striped">
         <th>Jugador ID</th>
+        <th>Nombre</th>
         <th>Puntuacion</th>
         
         </thead>
         <tbody id="listaProds">
         </tbody>
     </table>
+    <input type="hidden" name="codigoDELETE" id="codigoDELETE" value=""/>
+</form>
     </div>
 </div>
+
+
+
+<div class="container mt-5">
+<h2>Guarda tu puntuacion:
+</h2>
+<h3 style="color:lightgrey">Ingresar Id de jugador:
+</h3>
+<form action="PuntuacionGuardar.php" method="post">
+
+<input type="text" id="idj" name="idj"><br><br>
+<h3 style="color:lightgrey">Ingresar Puntuacion:
+</h3>
+<input type="text" id="puntos" name="puntos"><br><br>
+<button class="button" id="botones1" name="submit" type="submit">Registrar Puntuacion </button>
+
+</form>
+<br>
+</div>
+<div class="container mt-5">
+    <hr style="border-top: 1px dotted lightgrey;">
+    <h2 style="color:lightgrey">Publica tu puntuacion mas alta en nuestra pagina oficial:</h2>
+    <input type="text" id="pub" name="pub" >
+    <button class="button" type="submit" onclick="Post_Page()">Publicar</button>
+<br>
+<hr style="border-top: 1px dotted lightgrey;">
+
+</div>
+
+<div class="container mt-5">
+    <h2 style="color:lightgrey">Algunas de las publicaciones:</h2>
+    <table cellspacing="10" cellpadding="5">
+        <thead>
+          <th>Contenido:</th>
+        </thead>
+        <tbody id="lista-Publis"></tbody>
+      </table>
+
+<br>
+<hr style="border-top: 1px dotted lightgrey;">
+
+</div>
+
+
+
 <div class="button-container">
     <a href="Inicio.html" class="button">Regresar a inicio</a>
    
@@ -34,5 +82,102 @@
         <p>&copy; 2023 JAR. Todos los derechos reservados.</p>
     </div>
 </footer>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js" 
+integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" 
+crossorigin="anonymous"></script>
+
+<script src="puntuaciones.js"></script>
+<script>
+    let tableBody_page = document.getElementById("lista-Publis");
+    let tableBody_prof = document.getElementById("lista-Publis_prof");
+     
+            window.fbAsyncInit = function() {
+              FB.init({
+                appId            : '708055437814963/posts',
+                autoLogAppEvents : true,
+                xfbml            : true,
+                version          : 'v17.0'
+              });
+        
+    //fan page    
+    //mostrar publicaciones
+               FB.api("129354533590926/posts", 
+    "GET", 
+    {
+    access_token:
+    "EAAMRLiupbjsBOZCQ99c20wk22kn0CSRTDWz1AHauVDoOoErA9GrpDYdjm4Dq6s4MSifSKYVgZBgrOTDUnktq93MGXbwtqqGRh8VvKN82mSwWAeeXHGZC4MDDXEWCH2Q3pKoOZBJpOwu4S0YW0xxc40ZCjif1Im7oC5a2ELyhUIZCiWyBjU152W5msBrAR0UblacCeaDjykgZA5Cfnya5dXoZAq4fWUtHanUZD"
+    },
+    function(response){
+    
+    if(response&&!response.error){
+    
+        console.log('Mis Publis pagina '+'GET',response);
+    
+    for(let i=0;i<response.data.length;i++){
+    
+       tableBody_page.appendChild(descripcion(response.data[i].message));
+    }
+    
+    }
+    else{
+    
+        console.log('error');
+    }
+    
+    });
+    
+    
+               
+    
+            };
+    
+    
+    function descripcion(mensaje) {
+        let row = document.createElement("tr");
+        row.innerHTML = `    
+            <tr>
+                <td>${mensaje}</td>
+            </tr>   
+        `;
+        return row;
+      }        
+    
+    function Post_Page(){
+        let posteo = document.getElementById("pub").value;
+        alert(posteo);
+    
+        FB.init({
+                appId            : '708055437814963/posts',
+                autoLogAppEvents : true,
+                xfbml            : true,
+                version          : 'v17.0'
+              });
+    
+              FB.api("/129354533590926/feed", 
+              "POST", 
+              {
+                message:posteo,
+                access_token:
+                "EAAMRLiupbjsBOZCQ99c20wk22kn0CSRTDWz1AHauVDoOoErA9GrpDYdjm4Dq6s4MSifSKYVgZBgrOTDUnktq93MGXbwtqqGRh8VvKN82mSwWAeeXHGZC4MDDXEWCH2Q3pKoOZBJpOwu4S0YW0xxc40ZCjif1Im7oC5a2ELyhUIZCiWyBjU152W5msBrAR0UblacCeaDjykgZA5Cfnya5dXoZAq4fWUtHanUZD"
+                },
+               function(response){
+    
+                if(response&&!response.error){
+    
+                    console.log('POST'+'¡Posteado!',response);
+                    location.reload();
+                }
+                else{
+    
+                    console.log('error');
+                }
+    
+               });     
+    
+    }
+</script>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
 </body>
 </html>
