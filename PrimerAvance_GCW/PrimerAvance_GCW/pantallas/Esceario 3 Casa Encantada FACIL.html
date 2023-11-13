@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script type="module">
+      import { Points } from 'https://threejs.org/build/three.module.js';
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Escenario 3 Casa Encantada FACIL</title>
@@ -175,6 +178,56 @@
             sound.setVolume(0.2); // Ajusta el volumen como desees
             //sound.play();
         });
+//Particulas
+//=================================================================================================================================================================================================
+          
+const particleGeometry = new THREE.BufferGeometry();
+const particleMaterial = new THREE.PointsMaterial({
+  color: 0xffffff,
+  size: 0.1,
+});
+// Crear un array para las posiciones de las partículas
+const particles = [];
+
+// Llenar el array con posiciones aleatorias
+for (let i = 0; i < 1000; i++) {
+  const x = (Math.random() - 0.5) * 200;
+  const y = Math.random() * 100;
+  const z = (Math.random() - 0.5) * 200;
+
+  particles.push(x, y, z);
+}
+
+// Establecer las posiciones en la geometría
+particleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particles, 3));
+
+// Crear el objeto de partículas y agregarlo a la escena
+const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+scene.add(particleSystem);
+
+
+// Función para actualizar las posiciones de las partículas
+function updateParticles() {
+  const positions = particleGeometry.attributes.position.array;
+
+  for (let i = 0; i < positions.length; i += 3) {
+    // Modifica las posiciones para el movimiento
+    positions[i] += 0.1 * (Math.random() - 0.90); // Ajusta la velocidad según sea necesario
+    positions[i + 1] += 0.1 * (Math.random() - 0.8);
+    positions[i + 2] += 0.1 * (Math.random() - 0.6);
+
+    // Límites para que las partículas no se alejen demasiado
+    const limit = 50;
+    positions[i] = Math.max(-limit, Math.min(limit, positions[i]));
+    positions[i + 1] = Math.max(0, Math.min(limit, positions[i + 1]));
+    positions[i + 2] = Math.max(-limit, Math.min(limit, positions[i + 2]));
+  }
+
+  // Actualiza la geometría
+  particleGeometry.attributes.position.needsUpdate = true;
+}
+
+
 
 //LUCES
 //=================================================================================================================================================================================================
@@ -629,6 +682,8 @@ const countdownElement = document.getElementById("countdown");
         //COORDENADAS
         updateCharacterPosition();
 
+      //Particulas para que se muevan
+        updateParticles();
       }
 
       animate();
