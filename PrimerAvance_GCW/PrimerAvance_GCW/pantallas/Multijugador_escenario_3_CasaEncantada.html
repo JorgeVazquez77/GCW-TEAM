@@ -32,9 +32,84 @@
       background-color: #2980b9;
     }
     </style>
+    <style>
+      /* Estilo para el texto en pantalla */
+      #coordinates {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: white;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 5px;
+      }
+      #timer-container {
+        position: absolute;
+        top: 10px;
+        left: 350px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: white;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 5px;
+          }
+          #life {
+        position: absolute;
+        top: 10px;
+        left: 1000px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: white;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 5px;
+          }
+          #counter {
+        position: absolute;
+        top: 10px;
+        left: 1300px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: white;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 5px;
+          }
+          #win {
+        position: absolute;
+        top: 370px;
+        left: 500px;
+        font-family: Arial, sans-serif;
+        font-size: 100px;
+        color: white;
+        background: transparent;
+        padding: 5px;
+          }
+          #lose {
+        position: absolute;
+        top: 370px;
+        left: 500px;
+        font-family: Arial, sans-serif;
+        font-size: 100px;
+        color: rgb(255, 1, 1);
+        background: transparent;
+        padding: 5px;
+          }
+          #timeover {
+        position: absolute;
+        top: 370px;
+        left: 500px;
+        font-family: Arial, sans-serif;
+        font-size: 50px;
+        color: rgb(74, 247, 146);
+        background: transparent;
+        padding: 5px;
+          }
+    </style>
+
   </head>
   <body>
-    
+    <div id="timer-container">Tiempo restante: <span id="countdown">10</span> segundos</div>
+    <div id="coordinates">Coordenadas: (0, 0, 0)</div>
     <div class="button-container">
       <button id="button-login" class="button">Login</button>
       <button id="button-logout" class="button">Logout</button>
@@ -44,11 +119,22 @@
 
     </div>
     <div class="button-container">
+
+
+      <div id="container"></div>
+      <div id="life">Vida: 100</div>
+      <div id="counter">Contador: 0</div>
+      <div id="win"></div>
+      <div id="lose"></div>
+      <div id="timeover"></div>
+    <div class="button-container">
       <script src="https://cdnjs.cloudflare.com/ajax/libs/three-gltf-loader/1.2.3/three-gltf-loader.min.js"></script>
+
     <script type="module">
       import * as THREE from "./three.module.js";
       import { OrbitControls } from "./OrbitControls.js";
       import { GLTFLoader } from "./GLTFLoader.js";
+      
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut} from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
@@ -193,69 +279,12 @@ const app = initializeApp(firebaseConfig);
                 obj1.position.set(0,-3,30);
                 obj1.name = key;
                 obj1.castShadow = true;
+                obj1.transparent = true; // Activa la transparencia
+                obj1.opacity = 0.5;
                 scene.add(obj1);
               }
             );
-            const Arboles = new GLTFLoader();
-            loaderGLTF.load(
-              "low-poly_trees2.glb",
-              function (modelGLTF) {
-                const obj3 = modelGLTF.scene;
-                obj3.scale.set(.5,.5,.5);
-                obj3.position.set(-60,0,15);
-                obj3.name = key;
-                obj3.castShadow = true;
-                scene.add(obj3);
-              }
-            );
-            const Arboles2 = new GLTFLoader();
-            loaderGLTF.load(
-              "low-poly_trees2.glb",
-              function (modelGLTF) {
-                const arboles2 = modelGLTF.scene;
-                arboles2.scale.set(.5,.5,.5);
-                arboles2.position.set(30,0,15);
-                arboles2.name = key;
-                arboles2.castShadow = true;
-                scene.add(arboles2);
-              }
-            );
-            const Arboles3 = new GLTFLoader();
-            loaderGLTF.load(
-              "low-poly_trees2.glb",
-              function (modelGLTF) {
-                const arboles3 = modelGLTF.scene;
-                arboles3.scale.set(.7,.7,.7);
-                arboles3.position.set(20,0,-85);
-                arboles3.name = key;
-                arboles3.castShadow = true;
-                scene.add(arboles3);
-              }
-            );
-            const Arboles4 = new GLTFLoader();
-            loaderGLTF.load(
-              "low-poly_trees2.glb",
-              function (modelGLTF) {
-                const arboles4 = modelGLTF.scene;
-                arboles4.scale.set(.7,.7,.7);
-                arboles4.position.set(-10,0,-85);
-                arboles4.name = key;
-                arboles4.castShadow = true;
-                scene.add(arboles4);
-              }
-            );
-               const Arboles5 = new GLTFLoader();
-            loaderGLTF.load(
-              "low-poly_trees2.glb",
-              function (modelGLTF) {
-                const arboles5 = modelGLTF.scene;
-                arboles5.scale.set(.9,.9,.9);
-                arboles5.position.set(-60,0,-95);
-                arboles5.name = key;
-                arboles5.castShadow = true;
-                scene.add(arboles5);
-              }
-            );
+           
           }
           scene.getObjectByName(key).position.x = value.x;
           scene.getObjectByName(key).position.z = value.z;
@@ -270,6 +299,28 @@ const app = initializeApp(firebaseConfig);
         });
       }
 
+//TIMER
+//=================================================================================================================================================================================================
+
+const countdownElement = document.getElementById("countdown");
+      
+      let remainingTime = 10; // Tiempo en segundos para la cuenta regresiva
+      function updateTimer() {
+        remainingTime -= 0.1; // Reducir el tiempo en 0.01 segundos (ajusta según lo desees)
+        if (remainingTime < 0) {
+          remainingTime = 0;
+        }
+        countdownElement.textContent = remainingTime.toFixed(2);
+        if (remainingTime > 0) {
+          requestAnimationFrame(updateTimer);
+        }
+        renderer.render(scene, camera);
+      }
+      updateTimer(); 
+
+//TAMAÑO DE LA PANTALLA
+//================================================================================================================================================================================================= 
+      
       function resize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -278,7 +329,10 @@ const app = initializeApp(firebaseConfig);
       }
 
       window.addEventListener("resize", resize);
-
+      
+//CONTROLES      
+//=================================================================================================================================================================================================
+   
       document.onkeydown = function (e) {
         const jugadorActual = scene.getObjectByName(currentUser.uid);
 
@@ -308,10 +362,75 @@ const app = initializeApp(firebaseConfig);
       scene.add(plane);
 
       const cameraControl = new OrbitControls(camera, renderer.domElement);
+//Particulas
+//=================================================================================================================================================================================================
+          
+const particleGeometry = new THREE.BufferGeometry();
+const particleMaterial = new THREE.PointsMaterial({
+  color: 0xffffff,
+  size: 0.1,
+});
+// Crear un array para las posiciones de las partículas
+const particles = [];
 
+// Llenar el array con posiciones aleatorias
+for (let i = 0; i < 1000; i++) {
+  const x = (Math.random() - 0.5) * 200;
+  const y = Math.random() * 100;
+  const z = (Math.random() - 0.5) * 200;
+
+  particles.push(x, y, z);
+}
+
+// Establecer las posiciones en la geometría
+particleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particles, 3));
+
+// Crear el objeto de partículas y agregarlo a la escena
+const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+scene.add(particleSystem);
+
+
+// Función para actualizar las posiciones de las partículas
+function updateParticles() {
+  const positions = particleGeometry.attributes.position.array;
+
+  for (let i = 0; i < positions.length; i += 3) {
+    // Modifica las posiciones para el movimiento
+    positions[i] += 0.1 * (Math.random() - 0.90); // Ajusta la velocidad según sea necesario
+    positions[i + 1] += 0.1 * (Math.random() - 0.8);
+    positions[i + 2] += 0.1 * (Math.random() - 0.6);
+
+    // Límites para que las partículas no se alejen demasiado
+    const limit = 100;
+    positions[i] = Math.max(-limit, Math.min(limit, positions[i]));
+    positions[i + 1] = Math.max(0, Math.min(limit, positions[i + 1]));
+    positions[i + 2] = Math.max(-limit, Math.min(limit, positions[i + 2]));
+  }
+
+  // Actualiza la geometría
+  particleGeometry.attributes.position.needsUpdate = true;
+}
+//ANIMACIONES
+//======================================================================
       function animate() {
+         //FUNCIONES
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
+
+        //LOGICA TIMER
+        if (remainingTime==0){
+        const winElement = document.getElementById('timeover');
+        winElement.textContent = `¡SE ACABO EL TIEMPO!`
+        }else{
+
+        const winElement = document.getElementById('win');
+        winElement.textContent = ``
+        }
+
+         
+
+         //Particulas para que se muevan
+        updateParticles();
       }
 
       animate();
