@@ -6,7 +6,7 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Escenario 3 Casa Encantada FACIL</title>
+    <title>Escenario 3 Casa Encantada DIFICIL</title>
     <style>
 
       body {
@@ -322,14 +322,43 @@ function updateParticles() {
       }      
     );
 
+    const Enemigo3 = scene.getObjectByName("Enemigo3");
+    const loaderGLTF4 = new GLTFLoader();
+      loaderGLTF4.load(
+        "fantasma_ghost_phantom.glb",
+        function (modelGLTF) {
+        const Enemy1 = modelGLTF.scene;
+        Enemy1.scale.set(2,2,2);
+        Enemy1.position.set(-45, 0, -25);
+        Enemy1.name="Enemigo3";
+        Enemy1.castShadow = true;   
+        scene.add(Enemy1); 
+      }      
+    );
+
+    const Enemigo4 = scene.getObjectByName("Enemigo4");
+    const loaderGLTF5 = new GLTFLoader();
+      loaderGLTF5.load(
+        "fantasma_ghost_phantom.glb",
+        function (modelGLTF) {
+        const Enemy1 = modelGLTF.scene;
+        Enemy1.scale.set(2,2,2);
+        Enemy1.position.set(-48, 0, 14);
+        Enemy1.name="Enemigo4";
+        Enemy1.castShadow = true;   
+        scene.add(Enemy1); 
+      }      
+    );
+
+    //enemigo correlon 1
     const pointA = new THREE.Vector3(-5, 0, -5); // Primer punto de patrulla
     const pointB = new THREE.Vector3(5, 0, -5);  // Segundo punto de patrulla
     const pointC = new THREE.Vector3(5, 0, 5);  // Segundo punto de patrulla
     const pointD = new THREE.Vector3(-5, 0, 5);  // Segundo punto de patrulla
     let currentTarget = pointA; // Inicialmente, el objetivo es el punto A
 
-    function updateEnemyPosition() {
-    const Enemigo = scene.getObjectByName("Enemigo1");
+    function updateEnemyPosition1(EnemigoName) {
+    const Enemigo = scene.getObjectByName(EnemigoName);
         if (Enemigo) {
           // Calcula la dirección hacia el objetivo
           const direction = currentTarget.clone().sub(Enemigo.position).normalize();
@@ -359,6 +388,79 @@ function updateParticles() {
         }
      }
 
+    const pointA2= new THREE.Vector3(-45, 0, -25); // Primer punto de patrulla
+    const pointB2 = new THREE.Vector3(-45, 0, -33);  // Segundo punto de patrulla
+    const pointC2 = new THREE.Vector3(-30, 0, -33);  // Segundo punto de patrulla
+    const pointD2 = new THREE.Vector3(-30, 0, -25);  // Segundo punto de patrulla
+    let currentTarget2 = pointA2; // Inicialmente, el objetivo es el punto A
+
+    function updateEnemyPosition2(EnemigoName) {
+    const Enemigo = scene.getObjectByName(EnemigoName);
+        if (Enemigo) {
+          // Calcula la dirección hacia el objetivo
+          const direction = currentTarget2.clone().sub(Enemigo.position).normalize();
+
+          // Ajusta la velocidad del enemigo
+          const speed = 1;
+
+          // Mueve al enemigo hacia el objetivo
+          Enemigo.position.add(direction.multiplyScalar(speed));
+
+          // Verifica si el enemigo ha alcanzado el objetivo actual con una tolerancia
+          const distanceToTarget = Enemigo.position.distanceTo(currentTarget2);
+          const tolerance = 0.1; // Define una tolerancia
+
+          if (distanceToTarget < tolerance) {
+            // Cambia al siguiente objetivo
+            if (currentTarget2 === pointA2) {
+              currentTarget2 = pointB2;
+            } else if (currentTarget2 === pointB2) {
+              currentTarget2 = pointC2;
+            } else if (currentTarget2 === pointC2) {
+              currentTarget2 = pointD2;
+            }else if (currentTarget2 === pointD2) {
+              currentTarget2 = pointA2;
+            }
+          }
+        }
+     }     
+
+     const pointA3= new THREE.Vector3(-48, 0, 14); // Primer punto de patrulla
+    const pointB3 = new THREE.Vector3(-48, 0, 5);  // Segundo punto de patrulla
+    const pointC3 = new THREE.Vector3(-40, 0, 5);  // Segundo punto de patrulla
+    const pointD3 = new THREE.Vector3(-40, 0, 14);  // Segundo punto de patrulla
+    let currentTarget3 = pointA3; // Inicialmente, el objetivo es el punto A
+
+    function updateEnemyPosition3(EnemigoName) {
+    const Enemigo = scene.getObjectByName(EnemigoName);
+        if (Enemigo) {
+          // Calcula la dirección hacia el objetivo
+          const direction = currentTarget3.clone().sub(Enemigo.position).normalize();
+
+          // Ajusta la velocidad del enemigo
+          const speed = 1;
+
+          // Mueve al enemigo hacia el objetivo
+          Enemigo.position.add(direction.multiplyScalar(speed));
+
+          // Verifica si el enemigo ha alcanzado el objetivo actual con una tolerancia
+          const distanceToTarget = Enemigo.position.distanceTo(currentTarget3);
+          const tolerance = 0.1; // Define una tolerancia
+
+          if (distanceToTarget < tolerance) {
+            // Cambia al siguiente objetivo
+            if (currentTarget3 === pointA3) {
+              currentTarget3 = pointB3;
+            } else if (currentTarget3 === pointB3) {
+              currentTarget3 = pointC3;
+            } else if (currentTarget3 === pointC3) {
+              currentTarget3 = pointD3;
+            }else if (currentTarget3 === pointD3) {
+              currentTarget3 = pointA3;
+            }
+          }
+        }
+     }      
 
 //ENEMIGO QUE TE PERSIGUE
 //==================================================================================
@@ -386,7 +488,7 @@ function updateParticles() {
     if (jugador && Enemigo_2) {
           var jugadorPos = jugador.position.clone();
           var direccion = jugadorPos.sub(Enemigo_2.position).normalize();
-          Enemigo_2.position.add(direccion.multiplyScalar(2));
+          Enemigo_2.position.add(direccion.multiplyScalar(.25));
         }
     }
 
@@ -432,13 +534,38 @@ function updateParticles() {
     cube3.name="Pared";
     scene.add(cube3);
 
+//ITEMS 
+//================================================================================================================================================
+  //ITEM1 MAS TIEMPO
+const cube3GeometryIT1 = new THREE.BoxGeometry(3, 3, 3);
+    const cube3MaterialIT1 = new THREE.MeshPhongMaterial({color: "yellow"});
+    const cubeIT1 = new THREE.Mesh(cube3GeometryIT1, cube3MaterialIT1);
+    cubeIT1.position.set(27,0,-4);
+    cubeIT1.name="mastime";
+    scene.add(cubeIT1);
+
+ //ITEM2 MAS VELO
+ const cube3GeometryIT2 = new THREE.BoxGeometry(3, 3, 3);
+    const cube3MaterialIT2 = new THREE.MeshPhongMaterial({color: "purple"});
+    const cubeIT2 = new THREE.Mesh(cube3GeometryIT2, cube3MaterialIT2);
+    cubeIT2.position.set(-23,0,12);
+    cubeIT2.name="mas_velo";
+    scene.add(cubeIT2);
+
+  //ITEM2 MAS PUNTO
+ const cube3GeometryIT3 = new THREE.BoxGeometry(3, 3, 3);
+    const cube3MaterialIT3 = new THREE.MeshPhongMaterial({color: "green"});
+    const cubeIT3 = new THREE.Mesh(cube3GeometryIT3, cube3MaterialIT3);
+    cubeIT3.position.set(9,0,-24);
+    cubeIT3.name="mas_punto";
+    scene.add(cubeIT3);
 
 //TIMER
 //=================================================================================================================================================================================================
 
 const countdownElement = document.getElementById("countdown");
       
-      let remainingTime = 30; // Tiempo en segundos para la cuenta regresiva
+      let remainingTime = 90; // Tiempo en segundos para la cuenta regresiva
       function updateTimer() {
         remainingTime -= 0.1; // Reducir el tiempo en 0.01 segundos (ajusta según lo desees)
         if (remainingTime < 0) {
@@ -466,22 +593,23 @@ const countdownElement = document.getElementById("countdown");
 
 //CONTROLES      
 //=================================================================================================================================================================================================
-      
+      let velo=1;
       document.onkeydown = function (e) {
+        console.log('mi velocidad es de: '+velo);
         if (e.keyCode == 37) {
-          ghost_position[0]-=1;
+          ghost_position[0]-=velo;
           scene.getObjectByName("player").position.x = ghost_position[0];
         }
         if (e.keyCode == 39) {
-          ghost_position[0]+=1;
+          ghost_position[0]+=velo;
           scene.getObjectByName("player").position.x = ghost_position[0];
         }
         if (e.keyCode == 38) {
-          ghost_position[2]-=1;
+          ghost_position[2]-=velo;
           scene.getObjectByName("player").position.z = ghost_position[2];
         }
         if (e.keyCode == 40) {
-          ghost_position[2]+=1;
+          ghost_position[2]+=velo;
           scene.getObjectByName("player").position.z = ghost_position[2];
         }
       };
@@ -495,6 +623,8 @@ const countdownElement = document.getElementById("countdown");
   const counterElement = document.getElementById('counter');
 
   var Enemigo1Atrapado = false;
+  var Enemigo2Atrapado = false;
+  var Enemigo3Atrapado = false;
   
   var Perdiste = false;
 
@@ -549,6 +679,7 @@ const countdownElement = document.getElementById("countdown");
 
 //COLISIONES DEL ENEMIGO CON PATRON DEFINIDO
 //"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+//enem1
       const jugadorCC2 = scene.getObjectByName("player");
       const EnemigoCC2 = scene.getObjectByName("Enemigo1");
       if (jugadorCC2 && EnemigoCC) {
@@ -587,6 +718,88 @@ const countdownElement = document.getElementById("countdown");
                   }
           }
       }
+//enem2
+
+//const jugadorCC3 = scene.getObjectByName("player");
+      const EnemigoCC3 = scene.getObjectByName("Enemigo3");
+      if (jugadorCC2 && EnemigoCC) {
+        const collisionDetected = detectCollision(jugadorCC2, EnemigoCC3);
+          if (collisionDetected) {
+        // Se ha detectado una colisión, realizar las acciones necesarias
+                  const EnemigoCCc2 = scene.getObjectByName("Enemigo3");
+                  if (EnemigoCCc2) {
+                    
+
+                    if (!Enemigo2Atrapado){
+                    EnemigoCCc2.scale.set(.5,.5,.5);
+                    console.log('Colisión con enemigo detectada');
+                    count++;
+                    counterElement.textContent = `Contador: ${count}`;
+
+                    //Hacer que el enemigo se haga transparente para simular que desaparecio=================================================================================
+                              var material = new THREE.MeshStandardMaterial({transparent: true, opacity: 0.0,});
+                              // Asigna el nuevo material al objeto GLTF
+                              EnemigoCCc2.traverse(function (child) {
+                                if (child instanceof THREE.Mesh) {
+                                  child.material = material;
+                                }
+                              });
+                    //=======================================================================================================================================================          
+                   
+                     }
+                    Enemigo2Atrapado = true;
+                  }      
+          }else{
+
+                  const EnemigoCCc2 = scene.getObjectByName("Enemigo3");
+                  if (EnemigoCCc2) {
+
+                  EnemigoCCc2.scale.set(2,2,2);
+                  }
+          }
+      }
+
+//enem3
+
+//const jugadorCC3 = scene.getObjectByName("player");
+const EnemigoCC4 = scene.getObjectByName("Enemigo4");
+      if (jugadorCC2 && EnemigoCC) {
+        const collisionDetected = detectCollision(jugadorCC2, EnemigoCC4);
+          if (collisionDetected) {
+        // Se ha detectado una colisión, realizar las acciones necesarias
+                  const EnemigoCCc2 = scene.getObjectByName("Enemigo4");
+                  if (EnemigoCCc2) {
+                    
+
+                    if (!Enemigo3Atrapado){
+                    EnemigoCCc2.scale.set(.5,.5,.5);
+                    console.log('Colisión con enemigo detectada');
+                    count++;
+                    counterElement.textContent = `Contador: ${count}`;
+
+                    //Hacer que el enemigo se haga transparente para simular que desaparecio=================================================================================
+                              var material = new THREE.MeshStandardMaterial({transparent: true, opacity: 0.0,});
+                              // Asigna el nuevo material al objeto GLTF
+                              EnemigoCCc2.traverse(function (child) {
+                                if (child instanceof THREE.Mesh) {
+                                  child.material = material;
+                                }
+                              });
+                    //=======================================================================================================================================================          
+                   
+                     }
+                    Enemigo3Atrapado = true;
+                  }      
+          }else{
+
+                  const EnemigoCCc2 = scene.getObjectByName("Enemigo4");
+                  if (EnemigoCCc2) {
+
+                  EnemigoCCc2.scale.set(2,2,2);
+                  }
+          }
+      }
+
 
 
 //COLISIONES DEL PERSONAJE CON UNA PARED
@@ -624,7 +837,56 @@ const countdownElement = document.getElementById("countdown");
         }
       }
 
+
+//COLISIONES CON LOS ITEMS
+//=================================================================================================================================================================================================
+
+//ITEM DEL TIEMPO
+const jugadorCCIT = scene.getObjectByName("player");
+      const IT_time = scene.getObjectByName("mastime");               
+      if (jugadorCCIT && IT_time) { 
+        const collisionDetected2 = detectCollision(jugadorCCIT, IT_time);
+        if (collisionDetected2) {
+        console.log('Colisión con item de tiempo detectada');
+        IT_time.position.set(0,-10,0);
+        remainingTime=90;
+          }
+          else{
+
+          }
+        }
+//ITEM DE VELOCIDAD
+const jugadorCCIT2 = scene.getObjectByName("player");
+      const IT_velo = scene.getObjectByName("mas_velo");               
+      if (jugadorCCIT2 && IT_time) { 
+        const collisionDetected2 = detectCollision(jugadorCCIT2, IT_velo);
+        if (collisionDetected2) {
+        console.log('Colisión con item de velocidad detectada');
+        IT_velo.position.set(0,-10,0);
+        velo=2;
+          }
+          else{
+
+          }
+        }
+
+//ITEM DE PUNTO EXTRA
+const jugadorCCIT3 = scene.getObjectByName("player");
+      const IT_punto= scene.getObjectByName("mas_punto");               
+      if (jugadorCCIT2 && IT_time) { 
+        const collisionDetected2 = detectCollision(jugadorCCIT2, IT_punto);
+        if (collisionDetected2) {
+        console.log('Colisión con item de punto extra detectada');
+        count=count+1;
+        counterElement.textContent = `Contador: ${count}`;
+        IT_punto.position.set(0,-10,0);
+          }
+          else{
+
+          }
+        }
 }
+
 
 
 //ANIMACIONES
@@ -637,7 +899,8 @@ const countdownElement = document.getElementById("countdown");
         //LOGICA TIMER
         if (remainingTime==0){
         const winElement = document.getElementById('timeover');
-        winElement.textContent = `¡SE ACABO EL TIEMPO!`
+        winElement.textContent = `¡SE ACABO EL TIEMPO!`;
+        window.location.replace("SEACABOELTIEMPO.HTML");
         }else{
 
         const winElement = document.getElementById('win');
@@ -645,9 +908,10 @@ const countdownElement = document.getElementById("countdown");
         }
 
         //LOGICA GANAR
-        if (count==1){
+        if (count==3){
         const winElement = document.getElementById('win');
-        winElement.textContent = `¡GANASTE!`
+        winElement.textContent = `¡GANASTE!`;
+        window.location.replace("GANASTE.HTML");
         }else{
 
         const winElement = document.getElementById('win');
@@ -657,7 +921,8 @@ const countdownElement = document.getElementById("countdown");
         //LOGICA PERDER
         if (life==0){
         const winElement = document.getElementById('lose');
-        winElement.textContent = `PERDISTE`
+        winElement.textContent = `PERDISTE`;
+        window.location.replace("PERDISTE.HTML");
         }else{
 
         const winElement = document.getElementById('lose');
@@ -676,8 +941,13 @@ const countdownElement = document.getElementById("countdown");
         camaraTopDown();
 
         //ENEMIGOS
-        updateEnemyPosition();
-        //followPlayer()
+         let em1="Enemigo1";
+        updateEnemyPosition1(em1);
+        let em2="Enemigo3";
+        updateEnemyPosition2(em2);
+        let em3="Enemigo4";
+        updateEnemyPosition3(em3);
+        followPlayer()
 
         //COORDENADAS
         updateCharacterPosition();

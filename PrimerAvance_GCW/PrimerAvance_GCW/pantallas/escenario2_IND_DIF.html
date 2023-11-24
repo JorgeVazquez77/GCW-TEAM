@@ -6,7 +6,7 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Escenario 3 Casa Encantada FACIL</title>
+    <title>Escenario 2 Bosque encantado FACIL</title>
     <style>
 
       body {
@@ -256,8 +256,8 @@ function updateParticles() {
                 "fantasma_ghost_phantom.glb",
                 function (modelGLTF) {
                   const obj = modelGLTF.scene;
-                  obj.scale.set(2,2,2);
-                  obj.position.set(0, 0, 0);
+                  obj.scale.set(3,3,3);
+                  obj.position.set(10, 0, 0);
                   obj.name="player";
                   obj.castShadow = true;
                   scene.add(obj);                  
@@ -314,8 +314,8 @@ function updateParticles() {
         "fantasma_ghost_phantom.glb",
         function (modelGLTF) {
         const Enemy1 = modelGLTF.scene;
-        Enemy1.scale.set(2,2,2);
-        Enemy1.position.set(-5, 0, -5);
+        Enemy1.scale.set(3,3,3);
+        Enemy1.position.set(41,0,-12);
         Enemy1.name="Enemigo1";
         Enemy1.castShadow = true;   
         scene.add(Enemy1); 
@@ -328,8 +328,8 @@ function updateParticles() {
         "fantasma_ghost_phantom.glb",
         function (modelGLTF) {
         const Enemy1 = modelGLTF.scene;
-        Enemy1.scale.set(2,2,2);
-        Enemy1.position.set(7,0,49);
+        Enemy1.scale.set(3,3,3);
+        Enemy1.position.set(15,0,60);
         Enemy1.name="Enemigo3";
         Enemy1.castShadow = true;   
         scene.add(Enemy1); 
@@ -342,8 +342,8 @@ function updateParticles() {
         "fantasma_ghost_phantom.glb",
         function (modelGLTF) {
         const Enemy1 = modelGLTF.scene;
-        Enemy1.scale.set(2,2,2);
-        Enemy1.position.set(-25,0,41);
+        Enemy1.scale.set(3,3,3);
+        Enemy1.position.set(68,0,53);
         Enemy1.name="Enemigo4";
         Enemy1.castShadow = true;   
         scene.add(Enemy1); 
@@ -351,10 +351,10 @@ function updateParticles() {
     );
 
     //enemigo correlon 1
-    const pointA = new THREE.Vector3(-5, 0, -5); // Primer punto de patrulla
-    const pointB = new THREE.Vector3(5, 0, -5);  // Segundo punto de patrulla
-    const pointC = new THREE.Vector3(5, 0, 5);  // Segundo punto de patrulla
-    const pointD = new THREE.Vector3(-5, 0, 5);  // Segundo punto de patrulla
+    const pointA = new THREE.Vector3(41,0,-12); // Primer punto de patrulla
+    const pointB = new THREE.Vector3(41,0,-22);  // Segundo punto de patrulla
+    const pointC = new THREE.Vector3(52,0,-22);  // Segundo punto de patrulla
+    const pointD = new THREE.Vector3(52,0,-12);  // Segundo punto de patrulla
     let currentTarget = pointA; // Inicialmente, el objetivo es el punto A
 
     function updateEnemyPosition1(EnemigoName) {
@@ -388,10 +388,10 @@ function updateParticles() {
         }
      }
 
-    const pointA2= new THREE.Vector3(7,0,49); // Primer punto de patrulla
-    const pointB2 = new THREE.Vector3(7,0,41);  // Segundo punto de patrulla
-    const pointC2 = new THREE.Vector3(14,0,41);  // Segundo punto de patrulla
-    const pointD2 = new THREE.Vector3(14,0,49);  // Segundo punto de patrulla
+    const pointA2= new THREE.Vector3(15,0,60); // Primer punto de patrulla
+    const pointB2 = new THREE.Vector3(15,0,70);  // Segundo punto de patrulla
+    const pointC2 = new THREE.Vector3(30,0,70);  // Segundo punto de patrulla
+    const pointD2 = new THREE.Vector3(30,0,60);  // Segundo punto de patrulla
     let currentTarget2 = pointA2; // Inicialmente, el objetivo es el punto A
 
     function updateEnemyPosition2(EnemigoName) {
@@ -425,10 +425,10 @@ function updateParticles() {
         }
      }     
 
-     const pointA3= new THREE.Vector3(-25,0,41); // Primer punto de patrulla
-    const pointB3 = new THREE.Vector3(-25,0,45);  // Segundo punto de patrulla
-    const pointC3 = new THREE.Vector3(-10,0,45);  // Segundo punto de patrulla
-    const pointD3 = new THREE.Vector3(-10,0,41);  // Segundo punto de patrulla
+     const pointA3= new THREE.Vector3(68,0,53); // Primer punto de patrulla
+    const pointB3 = new THREE.Vector3(68,0,48);  // Segundo punto de patrulla
+    const pointC3 = new THREE.Vector3(79,0,48);  // Segundo punto de patrulla
+    const pointD3 = new THREE.Vector3(79,0,53);  // Segundo punto de patrulla
     let currentTarget3 = pointA3; // Inicialmente, el objetivo es el punto A
 
     function updateEnemyPosition3(EnemigoName) {
@@ -471,8 +471,8 @@ function updateParticles() {
         "fantasma_ghost_phantom.glb",
         function (modelGLTF) {
         const Enemy2 = modelGLTF.scene;
-        Enemy2.scale.set(2,2,2);
-        Enemy2.position.set(7,0,61);
+        Enemy2.scale.set(3,3,3);
+        Enemy2.position.set(96,4,77);
         Enemy2.name="Enemigo2";
         Enemy2.castShadow = true;        
         scene.add(Enemy2);
@@ -497,109 +497,31 @@ function updateParticles() {
 
 //PLANO
 //====================================================================
-      const planeGeometry = new THREE.PlaneGeometry(150, 150);
+      const planeGeometry = new THREE.PlaneGeometry(150,120);
       const planeMaterial = new THREE.MeshStandardMaterial({
-        color: "#1B3821",
+        color: "#38261B",
       });
       const plane = new THREE.Mesh(planeGeometry, planeMaterial);
       plane.receiveShadow = true;
       plane.rotateX(-Math.PI / 2);
-      plane.position.set(0, -0.5, 0);
+      plane.position.set(0, -0.5, -20);
       scene.add(plane);
 
-//CASA EMBRUJADA
+//BOSQUE EMBRUJADA
 //====================================================================
 const Cementerio = new GLTFLoader();
             loaderGLTF.load(
-              "Cementerio.glb",
+              "BosqueEncantado.glb",
               function (modelGLTF) {
                 const obj1 = modelGLTF.scene;
-                obj1.scale.set(6,6,6);
-                obj1.position.set(-40,0,0);
+                obj1.scale.set(1,1,1);
+                obj1.position.set(0,7,0);
                 obj1.castShadow = true;
                 scene.add(obj1);
               }
             );
 
-//cuervo1 con animacion
-const loaderGLTFa = new GLTFLoader();
-loaderGLTFa.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
-function(modelGLTFa){
-  const obj2 = modelGLTFa.scene;
-  obj2.scale.set(.5,.5,.5);
-  obj2.position.set(-10,10,5);
 
-  const mixer = new THREE.AnimationMixer(obj2);
-  const clip = modelGLTFa.animations[0];
-  const action = mixer.clipAction(clip);
-  action.play();
-  scene.add(obj2);
-
-function animatea(){
-  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
-  //checkCollisions();
-  requestAnimationFrame(animatea);
-  //movimiento cuervo lado a lado
-  mixer.update(0.1);
-  renderer.render(scene, camera);
-  
-}
-animatea();
-});
-
-//cuervo2 con animacion
-const loaderGLTFb = new GLTFLoader();
-loaderGLTFb.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
-function(modelGLTFa){
-  const obj2 = modelGLTFa.scene;
-  obj2.scale.set(.5,.5,.5);
-  obj2.position.set(20,10,20);
-
-  const mixer = new THREE.AnimationMixer(obj2);
-  const clip = modelGLTFa.animations[0];
-  const action = mixer.clipAction(clip);
-  action.play();
-  scene.add(obj2);
-
-function animatea(){
-  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
-  //checkCollisions();
-  requestAnimationFrame(animatea);
-  //movimiento cuervo lado a lado
-  mixer.update(0.1);
-  renderer.render(scene, camera);
-  
-}
-animatea();
-});
-
-
-//cuervo3 con animacion
-const loaderGLTFc = new GLTFLoader();
-loaderGLTFc.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
-function(modelGLTFa){
-  const obj2 = modelGLTFa.scene;
-  obj2.scale.set(.5,.5,.5);
-  obj2.position.set(0,10,40);
-
-  const mixer = new THREE.AnimationMixer(obj2);
-  const clip = modelGLTFa.animations[0];
-  const action = mixer.clipAction(clip);
-  action.play();
-  scene.add(obj2);
-
-function animatea(){
-  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
-  //checkCollisions();
-  requestAnimationFrame(animatea);
-  //movimiento cuervo lado a lado
-  mixer.update(0.1);
-  renderer.render(scene, camera);
-  
-}
-animatea();
-return obj2;
-});
 //CUBO COLISION 
 //================================================================================================================================================
   
@@ -613,26 +535,26 @@ return obj2;
 //ITEMS 
 //================================================================================================================================================
   //ITEM1 MAS TIEMPO
-const cube3GeometryIT1 = new THREE.BoxGeometry(3, 3, 3);
+const cube3GeometryIT1 = new THREE.BoxGeometry(4,4,4);
     const cube3MaterialIT1 = new THREE.MeshPhongMaterial({color: "yellow"});
     const cubeIT1 = new THREE.Mesh(cube3GeometryIT1, cube3MaterialIT1);
-    cubeIT1.position.set(27,0,-4);
+    cubeIT1.position.set(15,3,65);
     cubeIT1.name="mastime";
     scene.add(cubeIT1);
 
  //ITEM2 MAS VELO
- const cube3GeometryIT2 = new THREE.BoxGeometry(3, 3, 3);
+ const cube3GeometryIT2 = new THREE.BoxGeometry(4,4,4);
     const cube3MaterialIT2 = new THREE.MeshPhongMaterial({color: "purple"});
     const cubeIT2 = new THREE.Mesh(cube3GeometryIT2, cube3MaterialIT2);
-    cubeIT2.position.set(-21,0,2);
+    cubeIT2.position.set(66,3,81);
     cubeIT2.name="mas_velo";
     scene.add(cubeIT2);
 
   //ITEM2 MAS PUNTO
- const cube3GeometryIT3 = new THREE.BoxGeometry(3, 3, 3);
+ const cube3GeometryIT3 = new THREE.BoxGeometry(4,4,4);
     const cube3MaterialIT3 = new THREE.MeshPhongMaterial({color: "green"});
     const cubeIT3 = new THREE.Mesh(cube3GeometryIT3, cube3MaterialIT3);
-    cubeIT3.position.set(37,0,46);
+    cubeIT3.position.set(81,3,-12);
     cubeIT3.name="mas_punto";
     scene.add(cubeIT3);
 
@@ -641,7 +563,7 @@ const cube3GeometryIT1 = new THREE.BoxGeometry(3, 3, 3);
 
 const countdownElement = document.getElementById("countdown");
       
-      let remainingTime = 90; // Tiempo en segundos para la cuenta regresiva
+      let remainingTime = 120; // Tiempo en segundos para la cuenta regresiva
       function updateTimer() {
         remainingTime -= 0.1; // Reducir el tiempo en 0.01 segundos (ajusta según lo desees)
         if (remainingTime < 0) {
@@ -733,7 +655,7 @@ const countdownElement = document.getElementById("countdown");
                   const EnemigoCCc = scene.getObjectByName("Enemigo2");
                   if (EnemigoCCc) {
                           if(life>0){
-                          EnemigoCCc.scale.set(5,5,5);
+                          EnemigoCCc.scale.set(6,6,6);
                           console.log('Colisión con enemigo detectada');
                           life--;
                           life--;
@@ -748,7 +670,7 @@ const countdownElement = document.getElementById("countdown");
                   const EnemigoCCc = scene.getObjectByName("Enemigo2");
                   if (EnemigoCCc) {
 
-                  EnemigoCCc.scale.set(2,2,2);
+                  EnemigoCCc.scale.set(3,3,3);
                   }
           }
       }
@@ -790,7 +712,7 @@ const countdownElement = document.getElementById("countdown");
                   const EnemigoCCc2 = scene.getObjectByName("Enemigo1");
                   if (EnemigoCCc2) {
 
-                  EnemigoCCc2.scale.set(2,2,2);
+                  EnemigoCCc2.scale.set(3,3,3);
                   }
           }
       }
@@ -830,7 +752,7 @@ const countdownElement = document.getElementById("countdown");
                   const EnemigoCCc2 = scene.getObjectByName("Enemigo3");
                   if (EnemigoCCc2) {
 
-                  EnemigoCCc2.scale.set(2,2,2);
+                  EnemigoCCc2.scale.set(3,3,3);
                   }
           }
       }
@@ -871,7 +793,7 @@ const EnemigoCC4 = scene.getObjectByName("Enemigo4");
                   const EnemigoCCc2 = scene.getObjectByName("Enemigo4");
                   if (EnemigoCCc2) {
 
-                  EnemigoCCc2.scale.set(2,2,2);
+                  EnemigoCCc2.scale.set(3,3,3);
                   }
           }
       }
@@ -925,7 +847,7 @@ const jugadorCCIT = scene.getObjectByName("player");
         if (collisionDetected2) {
         console.log('Colisión con item de tiempo detectada');
         IT_time.position.set(0,-10,0);
-        remainingTime=90;
+        remainingTime=120;
           }
           else{
 
@@ -1023,7 +945,7 @@ const jugadorCCIT3 = scene.getObjectByName("player");
         updateEnemyPosition2(em2);
         let em3="Enemigo4";
         updateEnemyPosition3(em3);
-        //followPlayer()
+        followPlayer()
 
         //COORDENADAS
         updateCharacterPosition();

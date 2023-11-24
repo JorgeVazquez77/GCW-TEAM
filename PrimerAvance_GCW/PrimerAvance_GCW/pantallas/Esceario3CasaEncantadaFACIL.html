@@ -257,7 +257,7 @@ function updateParticles() {
                 function (modelGLTF) {
                   const obj = modelGLTF.scene;
                   obj.scale.set(2,2,2);
-                  obj.position.set(0, 0, 0);
+                  obj.position.set(10, 0, 0);
                   obj.name="player";
                   obj.castShadow = true;
                   scene.add(obj);                  
@@ -329,7 +329,7 @@ function updateParticles() {
         function (modelGLTF) {
         const Enemy1 = modelGLTF.scene;
         Enemy1.scale.set(2,2,2);
-        Enemy1.position.set(7,0,49);
+        Enemy1.position.set(-45, 0, -25);
         Enemy1.name="Enemigo3";
         Enemy1.castShadow = true;   
         scene.add(Enemy1); 
@@ -343,7 +343,7 @@ function updateParticles() {
         function (modelGLTF) {
         const Enemy1 = modelGLTF.scene;
         Enemy1.scale.set(2,2,2);
-        Enemy1.position.set(-25,0,41);
+        Enemy1.position.set(-48, 0, 14);
         Enemy1.name="Enemigo4";
         Enemy1.castShadow = true;   
         scene.add(Enemy1); 
@@ -388,10 +388,10 @@ function updateParticles() {
         }
      }
 
-    const pointA2= new THREE.Vector3(7,0,49); // Primer punto de patrulla
-    const pointB2 = new THREE.Vector3(7,0,41);  // Segundo punto de patrulla
-    const pointC2 = new THREE.Vector3(14,0,41);  // Segundo punto de patrulla
-    const pointD2 = new THREE.Vector3(14,0,49);  // Segundo punto de patrulla
+    const pointA2= new THREE.Vector3(-45, 0, -25); // Primer punto de patrulla
+    const pointB2 = new THREE.Vector3(-45, 0, -33);  // Segundo punto de patrulla
+    const pointC2 = new THREE.Vector3(-30, 0, -33);  // Segundo punto de patrulla
+    const pointD2 = new THREE.Vector3(-30, 0, -25);  // Segundo punto de patrulla
     let currentTarget2 = pointA2; // Inicialmente, el objetivo es el punto A
 
     function updateEnemyPosition2(EnemigoName) {
@@ -425,10 +425,10 @@ function updateParticles() {
         }
      }     
 
-     const pointA3= new THREE.Vector3(-25,0,41); // Primer punto de patrulla
-    const pointB3 = new THREE.Vector3(-25,0,45);  // Segundo punto de patrulla
-    const pointC3 = new THREE.Vector3(-10,0,45);  // Segundo punto de patrulla
-    const pointD3 = new THREE.Vector3(-10,0,41);  // Segundo punto de patrulla
+     const pointA3= new THREE.Vector3(-48, 0, 14); // Primer punto de patrulla
+    const pointB3 = new THREE.Vector3(-48, 0, 5);  // Segundo punto de patrulla
+    const pointC3 = new THREE.Vector3(-40, 0, 5);  // Segundo punto de patrulla
+    const pointD3 = new THREE.Vector3(-40, 0, 14);  // Segundo punto de patrulla
     let currentTarget3 = pointA3; // Inicialmente, el objetivo es el punto A
 
     function updateEnemyPosition3(EnemigoName) {
@@ -472,7 +472,7 @@ function updateParticles() {
         function (modelGLTF) {
         const Enemy2 = modelGLTF.scene;
         Enemy2.scale.set(2,2,2);
-        Enemy2.position.set(7,0,61);
+        Enemy2.position.set(35,0,-45);
         Enemy2.name="Enemigo2";
         Enemy2.castShadow = true;        
         scene.add(Enemy2);
@@ -497,109 +497,33 @@ function updateParticles() {
 
 //PLANO
 //====================================================================
-      const planeGeometry = new THREE.PlaneGeometry(150, 150);
+      const planeGeometry = new THREE.PlaneGeometry(150,120);
       const planeMaterial = new THREE.MeshStandardMaterial({
-        color: "#1B3821",
+        color: "#38261B",
       });
       const plane = new THREE.Mesh(planeGeometry, planeMaterial);
       plane.receiveShadow = true;
       plane.rotateX(-Math.PI / 2);
-      plane.position.set(0, -0.5, 0);
+      plane.position.set(0, -0.5, -20);
       scene.add(plane);
 
 //CASA EMBRUJADA
 //====================================================================
-const Cementerio = new GLTFLoader();
-            loaderGLTF.load(
-              "Cementerio.glb",
-              function (modelGLTF) {
-                const obj1 = modelGLTF.scene;
-                obj1.scale.set(6,6,6);
-                obj1.position.set(-40,0,0);
-                obj1.castShadow = true;
-                scene.add(obj1);
-              }
-            );
-
-//cuervo1 con animacion
-const loaderGLTFa = new GLTFLoader();
-loaderGLTFa.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
-function(modelGLTFa){
-  const obj2 = modelGLTFa.scene;
-  obj2.scale.set(.5,.5,.5);
-  obj2.position.set(-10,10,5);
-
-  const mixer = new THREE.AnimationMixer(obj2);
-  const clip = modelGLTFa.animations[0];
-  const action = mixer.clipAction(clip);
-  action.play();
-  scene.add(obj2);
-
-function animatea(){
-  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
-  //checkCollisions();
-  requestAnimationFrame(animatea);
-  //movimiento cuervo lado a lado
-  mixer.update(0.1);
-  renderer.render(scene, camera);
-  
-}
-animatea();
-});
-
-//cuervo2 con animacion
-const loaderGLTFb = new GLTFLoader();
-loaderGLTFb.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
-function(modelGLTFa){
-  const obj2 = modelGLTFa.scene;
-  obj2.scale.set(.5,.5,.5);
-  obj2.position.set(20,10,20);
-
-  const mixer = new THREE.AnimationMixer(obj2);
-  const clip = modelGLTFa.animations[0];
-  const action = mixer.clipAction(clip);
-  action.play();
-  scene.add(obj2);
-
-function animatea(){
-  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
-  //checkCollisions();
-  requestAnimationFrame(animatea);
-  //movimiento cuervo lado a lado
-  mixer.update(0.1);
-  renderer.render(scene, camera);
-  
-}
-animatea();
-});
+      const Cementerio = new GLTFLoader();
+      loaderGLTF.load(
+        "CasaEmbrujada.glb",
+        function (modelGLTF) {
+          const obj1 = modelGLTF.scene;
+          obj1.scale.set(1.3,1.3,1.3);
+          obj1.position.set(0,-3,30);
+          obj1.castShadow = true;
+          obj1.transparent = true; // Activa la transparencia
+          obj1.opacity = 0.5;
+          scene.add(obj1);
+        }
+      );
 
 
-//cuervo3 con animacion
-const loaderGLTFc = new GLTFLoader();
-loaderGLTFc.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
-function(modelGLTFa){
-  const obj2 = modelGLTFa.scene;
-  obj2.scale.set(.5,.5,.5);
-  obj2.position.set(0,10,40);
-
-  const mixer = new THREE.AnimationMixer(obj2);
-  const clip = modelGLTFa.animations[0];
-  const action = mixer.clipAction(clip);
-  action.play();
-  scene.add(obj2);
-
-function animatea(){
-  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
-  //checkCollisions();
-  requestAnimationFrame(animatea);
-  //movimiento cuervo lado a lado
-  mixer.update(0.1);
-  renderer.render(scene, camera);
-  
-}
-animatea();
-return obj2;
-});
 //CUBO COLISION 
 //================================================================================================================================================
   
@@ -624,7 +548,7 @@ const cube3GeometryIT1 = new THREE.BoxGeometry(3, 3, 3);
  const cube3GeometryIT2 = new THREE.BoxGeometry(3, 3, 3);
     const cube3MaterialIT2 = new THREE.MeshPhongMaterial({color: "purple"});
     const cubeIT2 = new THREE.Mesh(cube3GeometryIT2, cube3MaterialIT2);
-    cubeIT2.position.set(-21,0,2);
+    cubeIT2.position.set(-23,0,12);
     cubeIT2.name="mas_velo";
     scene.add(cubeIT2);
 
@@ -632,7 +556,7 @@ const cube3GeometryIT1 = new THREE.BoxGeometry(3, 3, 3);
  const cube3GeometryIT3 = new THREE.BoxGeometry(3, 3, 3);
     const cube3MaterialIT3 = new THREE.MeshPhongMaterial({color: "green"});
     const cubeIT3 = new THREE.Mesh(cube3GeometryIT3, cube3MaterialIT3);
-    cubeIT3.position.set(37,0,46);
+    cubeIT3.position.set(9,0,-24);
     cubeIT3.name="mas_punto";
     scene.add(cubeIT3);
 

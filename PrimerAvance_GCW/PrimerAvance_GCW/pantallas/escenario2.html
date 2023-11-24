@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script type="module">
+      import { Points } from 'https://threejs.org/build/three.module.js';
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Escenario2</title>
+    <title>Escenario 2 Bosque encantado FACIL</title>
     <style>
+
       body {
         margin: 0;
       padding: 0;
@@ -17,7 +21,8 @@
       position: relative;
       }
       .button-container {
-      margin-top: 20px; /* Espacio entre la parte superior y los botones */
+      /* Espacio entre la parte superior y los botones */
+      margin-top: 20px; 
     }
     .button {
       padding: 10px 20px;
@@ -32,42 +37,201 @@
       background-color: #2980b9;
     }
     </style>
+
+    <style>
+      /* Estilo para el texto en pantalla */
+      #coordinates {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: white;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 5px;
+      }
+      #timer-container {
+        position: absolute;
+        top: 10px;
+        left: 350px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: white;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 5px;
+          }
+          #life {
+        position: absolute;
+        top: 10px;
+        left: 1000px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: white;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 5px;
+          }
+          #counter {
+        position: absolute;
+        top: 10px;
+        left: 1300px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        color: white;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 5px;
+          }
+          #win {
+        position: absolute;
+        top: 370px;
+        left: 500px;
+        font-family: Arial, sans-serif;
+        font-size: 100px;
+        color: white;
+        background: transparent;
+        padding: 5px;
+          }
+          #lose {
+        position: absolute;
+        top: 370px;
+        left: 500px;
+        font-family: Arial, sans-serif;
+        font-size: 100px;
+        color: rgb(255, 1, 1);
+        background: transparent;
+        padding: 5px;
+          }
+          #timeover {
+        position: absolute;
+        top: 370px;
+        left: 500px;
+        font-family: Arial, sans-serif;
+        font-size: 50px;
+        color: rgb(74, 247, 146);
+        background: transparent;
+        padding: 5px;
+          }
+    </style>
+
   </head>
   <body>
     
-    <div class="button-container">
-      <button id="button-login" class="button">Login</button>
-      <button id="button-logout" class="button">Logout</button>
-    </div>
-    <div class="button-container">
-        <a href="Pausa.html" class="button">Pausa</a>
 
-    </div>
+    <div id="timer-container">Tiempo restante: <span id="countdown">10</span> segundos</div>
+    <div id="coordinates">Coordenadas: (0, 0, 0)</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <div class="button-container">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/three-gltf-loader/1.2.3/three-gltf-loader.min.js"></script>
+    </div>
+    <div class="button-container"><a href="Pausa.html" class="button">Pausa</a></div>
+    <div class="button-container">
+
+
+      <div id="container"></div>
+      <div id="life">Vida: 100</div>
+      <div id="counter">Contador: 0</div>
+      <div id="win"></div>
+      <div id="lose"></div>
+      <div id="timeover"></div>
+    
     <script type="module">
       import * as THREE from "./three.module.js";
       import { OrbitControls } from "./OrbitControls.js";
       import { GLTFLoader } from "./GLTFLoader.js";
+      import * as TWEEN from './tween.module.js';
+      import { FontLoader } from './FontLoader.js';
+
+
+
+//CARGA DE CAMARA Y ESCENA
+//=================================================================================================================================================================================================
 
       const scene = new THREE.Scene();
-      //scene.background = new THREE.Color("black");
-
       const loader = new THREE.TextureLoader();
       loader.load("NightSky.jpg", function (texture) {
         scene.background = texture;
       });
-      const camera = new THREE.PerspectiveCamera(
-        60,
-        window.innerWidth / window.innerHeight
-      );
 
-      camera.position.set(0, 80, 150);
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const cameraDistance = -25;
+      const cameraHeight = 70;
 
-      const renderer = new THREE.WebGLRenderer();
+      const renderer =  new THREE.WebGLRenderer();
       renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.shadowMap.enabled = true;
       document.body.appendChild(renderer.domElement);
+
+      const cameraControl = new OrbitControls(camera, renderer.domElement);
+
+
+//MUSICA
+//=================================================================================================================================================================================================
+          
+        const listener = new THREE.AudioListener();
+        camera.add(listener);
+
+        const audioLoader = new THREE.AudioLoader();
+
+        const sound = new THREE.Audio(listener);
+        // Cargar la música
+        audioLoader.load('Boos_Horror_Castle_Mario_Party_9_Music_Extended.mp3', function (buffer) {
+            sound.setBuffer(buffer);
+            sound.setLoop(true);
+            sound.setVolume(0.2); // Ajusta el volumen como desees
+            //sound.play();
+        });
+//Particulas
+//=================================================================================================================================================================================================
+          
+const particleGeometry = new THREE.BufferGeometry();
+const particleMaterial = new THREE.PointsMaterial({
+  color: 0xffffff,
+  size: 0.1,
+});
+// Crear un array para las posiciones de las partículas
+const particles = [];
+
+// Llenar el array con posiciones aleatorias
+for (let i = 0; i < 1000; i++) {
+  const x = (Math.random() - 0.5) * 200;
+  const y = Math.random() * 100;
+  const z = (Math.random() - 0.5) * 200;
+
+  particles.push(x, y, z);
+}
+
+// Establecer las posiciones en la geometría
+particleGeometry.setAttribute('position', new THREE.Float32BufferAttribute(particles, 3));
+
+// Crear el objeto de partículas y agregarlo a la escena
+const particleSystem = new THREE.Points(particleGeometry, particleMaterial);
+scene.add(particleSystem);
+
+
+// Función para actualizar las posiciones de las partículas
+function updateParticles() {
+  const positions = particleGeometry.attributes.position.array;
+
+  for (let i = 0; i < positions.length; i += 3) {
+    // Modifica las posiciones para el movimiento
+    positions[i] += 0.1 * (Math.random() - 0.90); // Ajusta la velocidad según sea necesario
+    positions[i + 1] += 0.1 * (Math.random() - 0.8);
+    positions[i + 2] += 0.1 * (Math.random() - 0.6);
+
+    // Límites para que las partículas no se alejen demasiado
+    const limit = 50;
+    positions[i] = Math.max(-limit, Math.min(limit, positions[i]));
+    positions[i + 1] = Math.max(0, Math.min(limit, positions[i + 1]));
+    positions[i + 2] = Math.max(-limit, Math.min(limit, positions[i + 2]));
+  }
+
+  // Actualiza la geometría
+  particleGeometry.attributes.position.needsUpdate = true;
+}
+
+
+
+//LUCES
+//=================================================================================================================================================================================================
+
 
       const hemisphereLight = new THREE.HemisphereLight(0xffffbb, 0x080820, 1);
       scene.add(hemisphereLight);
@@ -77,33 +241,275 @@
       directionalLight.castShadow = true;
       scene.add(directionalLight);
 
-      const planeGeometry = new THREE.PlaneGeometry(150, 150);
+
+//PERSONAJES
+//=================================================================================================================================================================================================
+
+
+//JUGADOR
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  let ghost_position=[10,0,0];
+  const jugador = scene.getObjectByName("player");
+              const loaderGLTF = new GLTFLoader();
+              loaderGLTF.load(
+                "fantasma_ghost_phantom.glb",
+                function (modelGLTF) {
+                  const obj = modelGLTF.scene;
+                  obj.scale.set(3,3,3);
+                  obj.position.set(10, 0, 0);
+                  obj.name="player";
+                  obj.castShadow = true;
+                  scene.add(obj);                  
+                }
+              );
+
+//COORDENADAS DEL JUGADOR EN PANTALLA
+//=================================================================================
+
+  const coordinatesText = document.getElementById('coordinates');
+
+  function updateCharacterPosition() {
+    // Obtén el jugador por su nombre "player"
+    const jugador = scene.getObjectByName("player");
+
+    if (jugador) {
+      // Actualizar y mostrar las coordenadas en pantalla
+      const playerPosition = jugador.position;
+      coordinatesText.textContent = `Coordenadas: (${playerPosition.x.toFixed(2)}, ${playerPosition.y.toFixed(2)}, ${playerPosition.z.toFixed(2)})`;
+    }
+  }
+
+//CAMARA TOP DOWN
+//==================================================================================
+
+  function camaraTopDown(){
+    const jugador3 = scene.getObjectByName("player");
+
+    if (jugador3) {
+    camera.position.set(0, cameraHeight, -cameraDistance);
+    camera.lookAt(jugador3.position);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target = jugador3.position;
+    const playerPosition = jugador3.position;
+          camera.position.set(
+            playerPosition.x,
+            playerPosition.y + cameraHeight,
+            playerPosition.z - cameraDistance
+          );
+
+          controls.update();
+    }
+  }
+
+//ENEMIGOS
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//ENEMIGO QUE SE MUEVE EN PATRON DEFINIDO
+//==================================================================================
+
+    const Enemigo1 = scene.getObjectByName("Enemigo1");
+    const loaderGLTF2 = new GLTFLoader();
+      loaderGLTF2.load(
+        "fantasma_ghost_phantom.glb",
+        function (modelGLTF) {
+        const Enemy1 = modelGLTF.scene;
+        Enemy1.scale.set(3,3,3);
+        Enemy1.position.set(41,0,-12);
+        Enemy1.name="Enemigo1";
+        Enemy1.castShadow = true;   
+        scene.add(Enemy1); 
+      }      
+    );
+
+    const Enemigo3 = scene.getObjectByName("Enemigo3");
+    const loaderGLTF4 = new GLTFLoader();
+      loaderGLTF4.load(
+        "fantasma_ghost_phantom.glb",
+        function (modelGLTF) {
+        const Enemy1 = modelGLTF.scene;
+        Enemy1.scale.set(3,3,3);
+        Enemy1.position.set(15,0,60);
+        Enemy1.name="Enemigo3";
+        Enemy1.castShadow = true;   
+        scene.add(Enemy1); 
+      }      
+    );
+
+    const Enemigo4 = scene.getObjectByName("Enemigo4");
+    const loaderGLTF5 = new GLTFLoader();
+      loaderGLTF5.load(
+        "fantasma_ghost_phantom.glb",
+        function (modelGLTF) {
+        const Enemy1 = modelGLTF.scene;
+        Enemy1.scale.set(3,3,3);
+        Enemy1.position.set(68,0,53);
+        Enemy1.name="Enemigo4";
+        Enemy1.castShadow = true;   
+        scene.add(Enemy1); 
+      }      
+    );
+
+    //enemigo correlon 1
+    const pointA = new THREE.Vector3(41,0,-12); // Primer punto de patrulla
+    const pointB = new THREE.Vector3(41,0,-22);  // Segundo punto de patrulla
+    const pointC = new THREE.Vector3(52,0,-22);  // Segundo punto de patrulla
+    const pointD = new THREE.Vector3(52,0,-12);  // Segundo punto de patrulla
+    let currentTarget = pointA; // Inicialmente, el objetivo es el punto A
+
+    function updateEnemyPosition1(EnemigoName) {
+    const Enemigo = scene.getObjectByName(EnemigoName);
+        if (Enemigo) {
+          // Calcula la dirección hacia el objetivo
+          const direction = currentTarget.clone().sub(Enemigo.position).normalize();
+
+          // Ajusta la velocidad del enemigo
+          const speed = 1;
+
+          // Mueve al enemigo hacia el objetivo
+          Enemigo.position.add(direction.multiplyScalar(speed));
+
+          // Verifica si el enemigo ha alcanzado el objetivo actual con una tolerancia
+          const distanceToTarget = Enemigo.position.distanceTo(currentTarget);
+          const tolerance = 0.1; // Define una tolerancia
+
+          if (distanceToTarget < tolerance) {
+            // Cambia al siguiente objetivo
+            if (currentTarget === pointA) {
+              currentTarget = pointB;
+            } else if (currentTarget === pointB) {
+              currentTarget = pointC;
+            } else if (currentTarget === pointC) {
+              currentTarget = pointD;
+            }else if (currentTarget === pointD) {
+              currentTarget = pointA;
+            }
+          }
+        }
+     }
+
+    const pointA2= new THREE.Vector3(15,0,60); // Primer punto de patrulla
+    const pointB2 = new THREE.Vector3(15,0,70);  // Segundo punto de patrulla
+    const pointC2 = new THREE.Vector3(30,0,70);  // Segundo punto de patrulla
+    const pointD2 = new THREE.Vector3(30,0,60);  // Segundo punto de patrulla
+    let currentTarget2 = pointA2; // Inicialmente, el objetivo es el punto A
+
+    function updateEnemyPosition2(EnemigoName) {
+    const Enemigo = scene.getObjectByName(EnemigoName);
+        if (Enemigo) {
+          // Calcula la dirección hacia el objetivo
+          const direction = currentTarget2.clone().sub(Enemigo.position).normalize();
+
+          // Ajusta la velocidad del enemigo
+          const speed = 1;
+
+          // Mueve al enemigo hacia el objetivo
+          Enemigo.position.add(direction.multiplyScalar(speed));
+
+          // Verifica si el enemigo ha alcanzado el objetivo actual con una tolerancia
+          const distanceToTarget = Enemigo.position.distanceTo(currentTarget2);
+          const tolerance = 0.1; // Define una tolerancia
+
+          if (distanceToTarget < tolerance) {
+            // Cambia al siguiente objetivo
+            if (currentTarget2 === pointA2) {
+              currentTarget2 = pointB2;
+            } else if (currentTarget2 === pointB2) {
+              currentTarget2 = pointC2;
+            } else if (currentTarget2 === pointC2) {
+              currentTarget2 = pointD2;
+            }else if (currentTarget2 === pointD2) {
+              currentTarget2 = pointA2;
+            }
+          }
+        }
+     }     
+
+     const pointA3= new THREE.Vector3(68,0,53); // Primer punto de patrulla
+    const pointB3 = new THREE.Vector3(68,0,48);  // Segundo punto de patrulla
+    const pointC3 = new THREE.Vector3(79,0,48);  // Segundo punto de patrulla
+    const pointD3 = new THREE.Vector3(79,0,53);  // Segundo punto de patrulla
+    let currentTarget3 = pointA3; // Inicialmente, el objetivo es el punto A
+
+    function updateEnemyPosition3(EnemigoName) {
+    const Enemigo = scene.getObjectByName(EnemigoName);
+        if (Enemigo) {
+          // Calcula la dirección hacia el objetivo
+          const direction = currentTarget3.clone().sub(Enemigo.position).normalize();
+
+          // Ajusta la velocidad del enemigo
+          const speed = 1;
+
+          // Mueve al enemigo hacia el objetivo
+          Enemigo.position.add(direction.multiplyScalar(speed));
+
+          // Verifica si el enemigo ha alcanzado el objetivo actual con una tolerancia
+          const distanceToTarget = Enemigo.position.distanceTo(currentTarget3);
+          const tolerance = 0.1; // Define una tolerancia
+
+          if (distanceToTarget < tolerance) {
+            // Cambia al siguiente objetivo
+            if (currentTarget3 === pointA3) {
+              currentTarget3 = pointB3;
+            } else if (currentTarget3 === pointB3) {
+              currentTarget3 = pointC3;
+            } else if (currentTarget3 === pointC3) {
+              currentTarget3 = pointD3;
+            }else if (currentTarget3 === pointD3) {
+              currentTarget3 = pointA3;
+            }
+          }
+        }
+     }      
+
+//ENEMIGO QUE TE PERSIGUE
+//==================================================================================
+
+    const Enemigo2 = scene.getObjectByName("Enemigo2");
+    const loaderGLTF3 = new GLTFLoader();
+      loaderGLTF3.load(
+        "fantasma_ghost_phantom.glb",
+        function (modelGLTF) {
+        const Enemy2 = modelGLTF.scene;
+        Enemy2.scale.set(3,3,3);
+        Enemy2.position.set(96,4,77);
+        Enemy2.name="Enemigo2";
+        Enemy2.castShadow = true;        
+        scene.add(Enemy2);
+      }      
+    );
+
+    //SEGUIR JUGADOR
+    //=========================================
+
+    function followPlayer() {
+      const jugador = scene.getObjectByName("player");
+      const Enemigo_2 = scene.getObjectByName("Enemigo2");
+    if (jugador && Enemigo_2) {
+          var jugadorPos = jugador.position.clone();
+          var direccion = jugadorPos.sub(Enemigo_2.position).normalize();
+          Enemigo_2.position.add(direccion.multiplyScalar(.25));
+        }
+    }
+
+//ESCENARIO
+//=================================================================================================================================================================================================      
+
+//PLANO
+//====================================================================
+      const planeGeometry = new THREE.PlaneGeometry(150,120);
       const planeMaterial = new THREE.MeshStandardMaterial({
-        color: "#1B3821",
+        color: "#38261B",
       });
       const plane = new THREE.Mesh(planeGeometry, planeMaterial);
       plane.receiveShadow = true;
       plane.rotateX(-Math.PI / 2);
-      plane.position.set(0, -0.5, 0);
+      plane.position.set(0, -0.5, -20);
+      scene.add(plane);
 
-//jugador
-let ghost_position=[10,0,0];
-const jugador = scene.getObjectByName("player");
-            const loaderGLTF = new GLTFLoader();
-            loaderGLTF.load(
-              "fantasma_ghost_phantom.glb",
-              function (modelGLTF) {
-                const obj = modelGLTF.scene;
-                obj.scale.set(3,3,3);
-                obj.position.set(ghost_position[0],ghost_position[1],ghost_position[2]);
-               /*  obj.rotateX(Math.PI*1.5);
-                obj.rotateZ(Math.PI*2.5); */
-                obj.name="player";
-                obj.castShadow = true;
-                scene.add(obj);
-            }
-            );
-            const Cementerio = new GLTFLoader();
+//BOSQUE EMBRUJADA
+//====================================================================
+const Cementerio = new GLTFLoader();
             loaderGLTF.load(
               "BosqueEncantado.glb",
               function (modelGLTF) {
@@ -114,157 +520,443 @@ const jugador = scene.getObjectByName("player");
                 scene.add(obj1);
               }
             );
- //cuervo1 con animacion
- const loaderGLTFa = new GLTFLoader();
-loaderGLTFa.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
-function(modelGLTFa){
-  const obj2 = modelGLTFa.scene;
-  obj2.scale.set(.5,.5,.5);
-  obj2.position.set(80,30,5);
 
-  const mixer = new THREE.AnimationMixer(obj2);
-  const clip = modelGLTFa.animations[0];
-  const action = mixer.clipAction(clip);
-  action.play();
-  scene.add(obj2);
 
-function animatea(){
-  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
-  //checkCollisions();
-  requestAnimationFrame(animatea);
-  //movimiento cuervo lado a lado
-  mixer.update(0.1);
-  renderer.render(scene, camera);
+//CUBO COLISION 
+//================================================================================================================================================
   
-}
-animatea();
-});
+    const cube3Geometry = new THREE.BoxGeometry(5, 5, 5);
+    const cube3Material = new THREE.MeshPhongMaterial({color: "grey"});
+    const cube3 = new THREE.Mesh(cube3Geometry, cube3Material);
+    cube3.position.set(35,0,0);
+    cube3.name="Pared";
+    scene.add(cube3);
 
-//cuervo2 con animacion
-const loaderGLTFb = new GLTFLoader();
-loaderGLTFb.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
-function(modelGLTFa){
-  const obj2 = modelGLTFa.scene;
-  obj2.scale.set(.5,.5,.5);
-  obj2.position.set(20,30,20);
+//ITEMS 
+//================================================================================================================================================
+  //ITEM1 MAS TIEMPO
+const cube3GeometryIT1 = new THREE.BoxGeometry(4,4,4);
+    const cube3MaterialIT1 = new THREE.MeshPhongMaterial({color: "yellow"});
+    const cubeIT1 = new THREE.Mesh(cube3GeometryIT1, cube3MaterialIT1);
+    cubeIT1.position.set(15,3,65);
+    cubeIT1.name="mastime";
+    scene.add(cubeIT1);
 
-  const mixer = new THREE.AnimationMixer(obj2);
-  const clip = modelGLTFa.animations[0];
-  const action = mixer.clipAction(clip);
-  action.play();
-  scene.add(obj2);
+ //ITEM2 MAS VELO
+ const cube3GeometryIT2 = new THREE.BoxGeometry(4,4,4);
+    const cube3MaterialIT2 = new THREE.MeshPhongMaterial({color: "purple"});
+    const cubeIT2 = new THREE.Mesh(cube3GeometryIT2, cube3MaterialIT2);
+    cubeIT2.position.set(66,3,81);
+    cubeIT2.name="mas_velo";
+    scene.add(cubeIT2);
 
-function animatea(){
-  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
-  //checkCollisions();
-  requestAnimationFrame(animatea);
-  //movimiento cuervo lado a lado
-  mixer.update(0.1);
-  renderer.render(scene, camera);
-  
-}
-animatea();
-});
+  //ITEM2 MAS PUNTO
+ const cube3GeometryIT3 = new THREE.BoxGeometry(4,4,4);
+    const cube3MaterialIT3 = new THREE.MeshPhongMaterial({color: "green"});
+    const cubeIT3 = new THREE.Mesh(cube3GeometryIT3, cube3MaterialIT3);
+    cubeIT3.position.set(81,3,-12);
+    cubeIT3.name="mas_punto";
+    scene.add(cubeIT3);
 
-//cuervo3 con animacion
-const loaderGLTFc = new GLTFLoader();
-loaderGLTFc.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
-function(modelGLTFa){
-  const obj2 = modelGLTFa.scene;
-  obj2.scale.set(.5,.5,.5);
-  obj2.position.set(60,30,40);
+//TIMER
+//=================================================================================================================================================================================================
 
-  const mixer = new THREE.AnimationMixer(obj2);
-  const clip = modelGLTFa.animations[0];
-  const action = mixer.clipAction(clip);
-  action.play();
-  scene.add(obj2);
-
-function animatea(){
-  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
-  //checkCollisions();
-  requestAnimationFrame(animatea);
-  //movimiento cuervo lado a lado
-  mixer.update(0.1);
-  renderer.render(scene, camera);
-  
-}
-animatea();
-});
-//cuervo4 con animacion
-const loaderGLTFd = new GLTFLoader();
-loaderGLTFd.load("./Escenario 1 Modelos/evil_crow/scene.gltf",
-function(modelGLTFa){
-  const obj2 = modelGLTFa.scene;
-  obj2.scale.set(.5,.5,.5);
-  obj2.position.set(20,30,60);
-
-  const mixer = new THREE.AnimationMixer(obj2);
-  const clip = modelGLTFa.animations[0];
-  const action = mixer.clipAction(clip);
-  action.play();
-  scene.add(obj2);
-
-function animatea(){
-  //cube2BB.copy( cube2.geometry.boundingBox ).applyMatrix4( cube2.matrixWorld );
-  //checkCollisions();
-  requestAnimationFrame(animatea);
-  //movimiento cuervo lado a lado
-  mixer.update(0.1);
-  renderer.render(scene, camera);
-  
-}
-animatea();
-});
+const countdownElement = document.getElementById("countdown");
+      
+      let remainingTime = 120; // Tiempo en segundos para la cuenta regresiva
+      function updateTimer() {
+        remainingTime -= 0.1; // Reducir el tiempo en 0.01 segundos (ajusta según lo desees)
+        if (remainingTime < 0) {
+          remainingTime = 0;
+        }
+        countdownElement.textContent = remainingTime.toFixed(2);
+        if (remainingTime > 0) {
+          requestAnimationFrame(updateTimer);
+        }
+        renderer.render(scene, camera);
+      }
+      updateTimer();          
+ 
+      
+//TAMAÑO DE LA PANTALLA
+//================================================================================================================================================================================================= 
+      
       function resize() {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.render(scene, camera);
       }
-
       window.addEventListener("resize", resize);
 
+//CONTROLES      
+//=================================================================================================================================================================================================
+      let velo=1;
       document.onkeydown = function (e) {
-
+        console.log('mi velocidad es de: '+velo);
         if (e.keyCode == 37) {
-          ghost_position[0]-=1;
-          //console.log(ghost_position[0]);
+          ghost_position[0]-=velo;
           scene.getObjectByName("player").position.x = ghost_position[0];
-
         }
-
         if (e.keyCode == 39) {
-          ghost_position[0]+=1;
-          //console.log(ghost_position[0]);
+          ghost_position[0]+=velo;
           scene.getObjectByName("player").position.x = ghost_position[0];
         }
-
         if (e.keyCode == 38) {
-          ghost_position[2]-=1;
-          //console.log(ghost_position[2]);
+          ghost_position[2]-=velo;
           scene.getObjectByName("player").position.z = ghost_position[2];
         }
-
         if (e.keyCode == 40) {
-          ghost_position[2]+=1;
-          //console.log(ghost_position[2]);
+          ghost_position[2]+=velo;
           scene.getObjectByName("player").position.z = ghost_position[2];
         }
-
       };
 
+//CONTADOR
+//=================================================================================================================================================================================================
+  let life = 100;
+  const lifeElement = document.getElementById('life');
+
+  let count = 0;
+  const counterElement = document.getElementById('counter');
+
+  var Enemigo1Atrapado = false;
+  var Enemigo2Atrapado = false;
+  var Enemigo3Atrapado = false;
+  
+  var Perdiste = false;
+
+//COLISIONES
+//=================================================================================================================================================================================================
+
+  function detectCollision(object1, object2) {
+    const box1 = new THREE.Box3().setFromObject(object1);
+    const box2 = new THREE.Box3().setFromObject(object2);
+
+    // Comprueba si los bounding boxes (cajas delimitadoras) se superponen
+    return box1.intersectsBox(box2);
+  }
+
+
+  function checkCollisions() {
+
+//COLISIONES DE UN PERSONAJE CON OTRO
+//========================================================================================================================== 
+
+
+//COLISIONES DEL ENEMIGO QUE TE PERSIGUE
+//"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+      const jugadorCC = scene.getObjectByName("player");
+      const EnemigoCC = scene.getObjectByName("Enemigo2");
+      if (jugadorCC && EnemigoCC) {
+        const collisionDetected = detectCollision(jugadorCC, EnemigoCC);
+          if (collisionDetected) {
+        // Se ha detectado una colisión, realizar las acciones necesarias
+                  const EnemigoCCc = scene.getObjectByName("Enemigo2");
+                  if (EnemigoCCc) {
+                          if(life>0){
+                          EnemigoCCc.scale.set(6,6,6);
+                          console.log('Colisión con enemigo detectada');
+                          life--;
+                          life--;
+                          lifeElement.textContent = `Vida: ${life}`;
+                          }else if (life==0){
+                          Perdiste = true;
+                          }
+                        
+                  }      
+          }else{
+
+                  const EnemigoCCc = scene.getObjectByName("Enemigo2");
+                  if (EnemigoCCc) {
+
+                  EnemigoCCc.scale.set(3,3,3);
+                  }
+          }
+      }
+
+//COLISIONES DEL ENEMIGO CON PATRON DEFINIDO
+//"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+//enem1
+      const jugadorCC2 = scene.getObjectByName("player");
+      const EnemigoCC2 = scene.getObjectByName("Enemigo1");
+      if (jugadorCC2 && EnemigoCC) {
+        const collisionDetected = detectCollision(jugadorCC2, EnemigoCC2);
+          if (collisionDetected) {
+        // Se ha detectado una colisión, realizar las acciones necesarias
+                  const EnemigoCCc2 = scene.getObjectByName("Enemigo1");
+                  if (EnemigoCCc2) {
+                    
+
+                    if (!Enemigo1Atrapado){
+                    EnemigoCCc2.scale.set(.5,.5,.5);
+                    console.log('Colisión con enemigo detectada');
+                    count++;
+                    counterElement.textContent = `Contador: ${count}`;
+
+                    //Hacer que el enemigo se haga transparente para simular que desaparecio=================================================================================
+                              var material = new THREE.MeshStandardMaterial({transparent: true, opacity: 0.0,});
+                              // Asigna el nuevo material al objeto GLTF
+                              EnemigoCCc2.traverse(function (child) {
+                                if (child instanceof THREE.Mesh) {
+                                  child.material = material;
+                                }
+                              });
+                    //=======================================================================================================================================================          
+                   
+                     }
+                    Enemigo1Atrapado = true;
+                  }      
+          }else{
+
+                  const EnemigoCCc2 = scene.getObjectByName("Enemigo1");
+                  if (EnemigoCCc2) {
+
+                  EnemigoCCc2.scale.set(3,3,3);
+                  }
+          }
+      }
+//enem2
+
+//const jugadorCC3 = scene.getObjectByName("player");
+      const EnemigoCC3 = scene.getObjectByName("Enemigo3");
+      if (jugadorCC2 && EnemigoCC) {
+        const collisionDetected = detectCollision(jugadorCC2, EnemigoCC3);
+          if (collisionDetected) {
+        // Se ha detectado una colisión, realizar las acciones necesarias
+                  const EnemigoCCc2 = scene.getObjectByName("Enemigo3");
+                  if (EnemigoCCc2) {
+                    
+
+                    if (!Enemigo2Atrapado){
+                    EnemigoCCc2.scale.set(.5,.5,.5);
+                    console.log('Colisión con enemigo detectada');
+                    count++;
+                    counterElement.textContent = `Contador: ${count}`;
+
+                    //Hacer que el enemigo se haga transparente para simular que desaparecio=================================================================================
+                              var material = new THREE.MeshStandardMaterial({transparent: true, opacity: 0.0,});
+                              // Asigna el nuevo material al objeto GLTF
+                              EnemigoCCc2.traverse(function (child) {
+                                if (child instanceof THREE.Mesh) {
+                                  child.material = material;
+                                }
+                              });
+                    //=======================================================================================================================================================          
+                   
+                     }
+                    Enemigo2Atrapado = true;
+                  }      
+          }else{
+
+                  const EnemigoCCc2 = scene.getObjectByName("Enemigo3");
+                  if (EnemigoCCc2) {
+
+                  EnemigoCCc2.scale.set(3,3,3);
+                  }
+          }
+      }
+
+//enem3
+
+//const jugadorCC3 = scene.getObjectByName("player");
+const EnemigoCC4 = scene.getObjectByName("Enemigo4");
+      if (jugadorCC2 && EnemigoCC) {
+        const collisionDetected = detectCollision(jugadorCC2, EnemigoCC4);
+          if (collisionDetected) {
+        // Se ha detectado una colisión, realizar las acciones necesarias
+                  const EnemigoCCc2 = scene.getObjectByName("Enemigo4");
+                  if (EnemigoCCc2) {
+                    
+
+                    if (!Enemigo3Atrapado){
+                    EnemigoCCc2.scale.set(.5,.5,.5);
+                    console.log('Colisión con enemigo detectada');
+                    count++;
+                    counterElement.textContent = `Contador: ${count}`;
+
+                    //Hacer que el enemigo se haga transparente para simular que desaparecio=================================================================================
+                              var material = new THREE.MeshStandardMaterial({transparent: true, opacity: 0.0,});
+                              // Asigna el nuevo material al objeto GLTF
+                              EnemigoCCc2.traverse(function (child) {
+                                if (child instanceof THREE.Mesh) {
+                                  child.material = material;
+                                }
+                              });
+                    //=======================================================================================================================================================          
+                   
+                     }
+                    Enemigo3Atrapado = true;
+                  }      
+          }else{
+
+                  const EnemigoCCc2 = scene.getObjectByName("Enemigo4");
+                  if (EnemigoCCc2) {
+
+                  EnemigoCCc2.scale.set(3,3,3);
+                  }
+          }
+      }
+
+
+
+//COLISIONES DEL PERSONAJE CON UNA PARED
+//==========================================================================================================================   
+
+      const jugadorCCC = scene.getObjectByName("player");
+      const ParedCC = scene.getObjectByName("Pared");               
+      if (jugadorCCC && ParedCC) { 
+        const collisionDetected = detectCollision(jugadorCCC, ParedCC);
+        if (collisionDetected) {
+        // Se ha detectado una colisión, realizar las acciones necesarias
+                      
+//Colision1 El jugador se teletransporta a la ubicacion anterior+++++++++++++++++++++++++++++++++++++++++++++++++++++
+        jugadorCCC.position.copy(jugadorCCC.userData.previousPosition);
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//Colision2 El jugador se mueve lentamente a la ubicacion anterior----------------------------------------------------
+          // const collisionDirection = new THREE.Vector3();
+          // collisionDirection.subVectors(jugadorCCC.position, ParedCC.position).normalize();
+          // Retroceder en la dirección de la colisión
+          // const backwardDistance = 1; // Puedes ajustar esta distancia según sea necesario
+          //jugadorCCC.position.add(collisionDirection.multiplyScalar(backwardDistance));
+//-------------------------------------------------------------------------------------------------------------------
+        //ParedCC.scale.set(3,3,3);
+        console.log('Colisión con pared detectada');
+
+          }else{
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++            
+            jugadorCCC.userData.previousPosition = jugadorCCC.position.clone();
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++            
+            //PuedeMoverse = true;
+                  const ParedCC = scene.getObjectByName("Pared");
+                  if (ParedCC) {
+                  ParedCC.scale.set(1,1,1);
+                  }
+        }
+      }
+
+
+//COLISIONES CON LOS ITEMS
+//=================================================================================================================================================================================================
+
+//ITEM DEL TIEMPO
+const jugadorCCIT = scene.getObjectByName("player");
+      const IT_time = scene.getObjectByName("mastime");               
+      if (jugadorCCIT && IT_time) { 
+        const collisionDetected2 = detectCollision(jugadorCCIT, IT_time);
+        if (collisionDetected2) {
+        console.log('Colisión con item de tiempo detectada');
+        IT_time.position.set(0,-10,0);
+        remainingTime=120;
+          }
+          else{
+
+          }
+        }
+//ITEM DE VELOCIDAD
+const jugadorCCIT2 = scene.getObjectByName("player");
+      const IT_velo = scene.getObjectByName("mas_velo");               
+      if (jugadorCCIT2 && IT_time) { 
+        const collisionDetected2 = detectCollision(jugadorCCIT2, IT_velo);
+        if (collisionDetected2) {
+        console.log('Colisión con item de velocidad detectada');
+        IT_velo.position.set(0,-10,0);
+        velo=2;
+          }
+          else{
+
+          }
+        }
+
+//ITEM DE PUNTO EXTRA
+const jugadorCCIT3 = scene.getObjectByName("player");
+      const IT_punto= scene.getObjectByName("mas_punto");               
+      if (jugadorCCIT2 && IT_time) { 
+        const collisionDetected2 = detectCollision(jugadorCCIT2, IT_punto);
+        if (collisionDetected2) {
+        console.log('Colisión con item de punto extra detectada');
+        count=count+1;
+        counterElement.textContent = `Contador: ${count}`;
+        IT_punto.position.set(0,-10,0);
+          }
+          else{
+
+          }
+        }
+}
+
+
+
+//ANIMACIONES
+//=================================================================================================================================================================================================
       
 
-      const cameraControl = new OrbitControls(camera, renderer.domElement);
+        function animate() { 
+           
+          
+        //LOGICA TIMER
+        if (remainingTime==0){
+        const winElement = document.getElementById('timeover');
+        winElement.textContent = `¡SE ACABO EL TIEMPO!`;
+        window.location.replace("SEACABOELTIEMPO.HTML");
+        }else{
 
-      function animate() {
+        const winElement = document.getElementById('win');
+        winElement.textContent = ``
+        }
+
+        //LOGICA GANAR
+        if (count==3){
+        const winElement = document.getElementById('win');
+        winElement.textContent = `¡GANASTE!`;
+        window.location.replace("GANASTE.HTML");
+        }else{
+
+        const winElement = document.getElementById('win');
+        winElement.textContent = ``
+        }
+
+        //LOGICA PERDER
+        if (life==0){
+        const winElement = document.getElementById('lose');
+        winElement.textContent = `PERDISTE`;
+        window.location.replace("PERDISTE.HTML");
+        }else{
+
+        const winElement = document.getElementById('lose');
+        winElement.textContent = ``
+        }
+
+        //FUNCIONES
         renderer.render(scene, camera);
         requestAnimationFrame(animate);
 
+
+        //COLISIONES
+        checkCollisions();
+
+        //CAMARA TOP-DOWN
+        camaraTopDown();
+
+        //ENEMIGOS
+         let em1="Enemigo1";
+        updateEnemyPosition1(em1);
+        let em2="Enemigo3";
+        updateEnemyPosition2(em2);
+        let em3="Enemigo4";
+        updateEnemyPosition3(em3);
+        //followPlayer()
+
+        //COORDENADAS
+        updateCharacterPosition();
+
+      //Particulas para que se muevan
+        updateParticles();
       }
 
       animate();
+
+
     </script>
   </body>
 </html>
