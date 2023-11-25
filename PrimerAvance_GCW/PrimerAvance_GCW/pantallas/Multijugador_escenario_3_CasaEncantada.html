@@ -105,7 +105,7 @@
         padding: 5px;
           }
     </style>
-
+<script src="Boos_Horror_Castle_Mario_Party_9_Music_Extended.mp3"></script>
   </head>
   <body>
     <audio id="backgroundMusic" loop>
@@ -160,10 +160,12 @@ const firebaseConfig = {
   messagingSenderId: "666615755785",
   appId: "1:666615755785:web:97365a60650d454e7db4d8"
 };
-window.onload = function() {
+window.addEventListener('DOMContentLoaded', (event) => {
   const backgroundMusic = document.getElementById('backgroundMusic');
-  backgroundMusic.play();
-}
+  if (backgroundMusic.paused) {
+    backgroundMusic.play();
+  }
+});
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
