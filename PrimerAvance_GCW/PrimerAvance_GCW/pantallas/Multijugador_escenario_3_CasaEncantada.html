@@ -108,6 +108,15 @@
 
   </head>
   <body>
+    <audio id="backgroundMusic" loop>
+      <source src="Boos_Horror_Castle_Mario_Party_9_Music_Extended.mp3" type="audio/mpeg">
+      Tu navegador no soporta el elemento de audio.
+    </audio>
+    <audio id="collisionSound">
+      <source src="videoplayback.mp3" type="audio/mpeg">
+      Tu navegador no soporta el elemento de audio.
+    </audio>
+
     <div id="timer-container">Tiempo restante: <span id="countdown">10</span> segundos</div>
     <div id="coordinates">Coordenadas: (0, 0, 0)</div>
     <div class="button-container">
@@ -151,7 +160,10 @@ const firebaseConfig = {
   messagingSenderId: "666615755785",
   appId: "1:666615755785:web:97365a60650d454e7db4d8"
 };
-
+window.onload = function() {
+  const backgroundMusic = document.getElementById('backgroundMusic');
+  backgroundMusic.play();
+}
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
@@ -298,13 +310,88 @@ const app = initializeApp(firebaseConfig);
           z: positionZ,
         });
       }
+//ENEMIGOS AUI/////////////////////////////////////////////////////////  
+// Al crear un enemigo (dentro del código que agrega enemigos)
+function agregarEnemigo() {
+  const loaderGLTF = new GLTFLoader();
+  loaderGLTF.load("fantasma_ghost_phantom.glb", function (modelGLTF) {
+    const enemigo = modelGLTF.scene;
+    enemigo.scale.set(2,2,2);
+    enemigo.position.set(-5, 0, -5);
+    enemigo.castShadow = true;  
+    enemigo.name = "enemigo"; // Dales un nombre para identificarlos fácilmente
+    scene.add(enemigo);
+  });
+  //enemigo 2 
+  const loaderGLTF2 = new GLTFLoader();
+  loaderGLTF.load("fantasma_ghost_phantom.glb", function (modelGLTF) {
+    const enemigo2 = modelGLTF.scene;
+    enemigo2.scale.set(2,2,2);
+    enemigo2.position.set(-45, 0, -25);
+    enemigo2.castShadow = true;  
+    enemigo2.name = "enemigo2"; // Dales un nombre para identificarlos fácilmente
+    scene.add(enemigo2);
+  });
+}
+const puntosDeRecorrido = [
+  new THREE.Vector3(-10, 0, -10),
+  new THREE.Vector3(10, 0, -10),
+  new THREE.Vector3(10, 0, 10),
+  new THREE.Vector3(-10, 0, 10)
+];
+let puntoActual = 0;
 
+function moverEnemigo() {
+  const enemigo = scene.getObjectByName("enemigo");
+ 
+  // Obtener el siguiente punto en el recorrido
+  const siguientePunto = puntosDeRecorrido[puntoActual];
+
+  // Mover al enemigo hacia el siguiente punto
+  enemigo.position.lerp(siguientePunto, 0.100); // Puedes ajustar la velocidad cambiando el segundo parámetro
+
+
+  // Verificar si el enemigo llegó al siguiente punto
+  const distancia = enemigo.position.distanceTo(siguientePunto);
+  if (distancia < 0.1) {
+    // Cambiar al siguiente punto
+    puntoActual = (puntoActual + 1) % puntosDeRecorrido.length;
+  }
+}
+// Detección de colisiones en el bucle de animación
+function detectarColisiones() {
+  const jugador = scene.getObjectByName(currentUser.uid);
+  const enemigo = scene.getObjectByName("enemigo");
+ 
+
+  // Verificar colisión con el primer enemigo
+  const jugadorBox = new THREE.Box3().setFromObject(jugador);
+  const enemigoBox = new THREE.Box3().setFromObject(enemigo);
+  if (jugadorBox.intersectsBox(enemigoBox)) {
+    const collisionSound = document.getElementById('collisionSound');
+    collisionSound.play();
+
+    scene.remove(enemigo);
+    incrementarContador();
+  }
+
+
+}
+// Función para incrementar el contador
+let contador = 0;
+
+function incrementarContador() {
+  contador++;
+  const contadorElement = document.getElementById("counter");
+  contadorElement.textContent = `Contador: ${contador}`;
+}
+agregarEnemigo();
 //TIMER
 //=================================================================================================================================================================================================
 
 const countdownElement = document.getElementById("countdown");
       
-      let remainingTime = 10; // Tiempo en segundos para la cuenta regresiva
+      let remainingTime = 1000; // Tiempo en segundos para la cuenta regresiva
       function updateTimer() {
         remainingTime -= 0.1; // Reducir el tiempo en 0.01 segundos (ajusta según lo desees)
         if (remainingTime < 0) {
@@ -333,31 +420,30 @@ const countdownElement = document.getElementById("countdown");
 //CONTROLES      
 //=================================================================================================================================================================================================
    
-      document.onkeydown = function (e) {
-        const jugadorActual = scene.getObjectByName(currentUser.uid);
-
-        if (e.keyCode == 37) {
-          jugadorActual.position.x -= 1;
-        }
-
-        if (e.keyCode == 39) {
-          jugadorActual.position.x += 1;
-        }
-
-        if (e.keyCode == 38) {
-          jugadorActual.position.z -= 1;
-        }
-
-        if (e.keyCode == 40) {
-          jugadorActual.position.z += 1;
-        }
-
-        writeUserData(
-          currentUser.uid,
-          jugadorActual.position.x,
-          jugadorActual.position.z
-        );
-      };
+document.onkeydown = function (e) {
+  const jugadorActual = scene.getObjectByName(currentUser.uid);
+  switch(e.keyCode) {
+    case 37: // Izquierda
+      jugadorActual.position.x -= 1;
+      break;
+    case 39: // Derecha
+      jugadorActual.position.x += 1;
+      break;
+    case 38: // Arriba
+      jugadorActual.position.z -= 1;
+      break;
+    case 40: // Abajo
+      jugadorActual.position.z += 1;
+      break;
+    default:
+      break;
+  }
+  writeUserData(
+    currentUser.uid,
+    jugadorActual.position.x,
+    jugadorActual.position.z
+  );
+};
 
       scene.add(plane);
 
@@ -393,20 +479,18 @@ scene.add(particleSystem);
 // Función para actualizar las posiciones de las partículas
 function updateParticles() {
   const positions = particleGeometry.attributes.position.array;
+  const limit = 1000;
 
   for (let i = 0; i < positions.length; i += 3) {
-    // Modifica las posiciones para el movimiento
-    positions[i] += 0.1 * (Math.random() - 0.90); // Ajusta la velocidad según sea necesario
+    positions[i] += 0.1 * (Math.random() - 0.90);
     positions[i + 1] += 0.1 * (Math.random() - 0.8);
     positions[i + 2] += 0.1 * (Math.random() - 0.6);
 
-    // Límites para que las partículas no se alejen demasiado
-    const limit = 100;
+    // Limitar las posiciones para evitar valores extremos
     positions[i] = Math.max(-limit, Math.min(limit, positions[i]));
     positions[i + 1] = Math.max(0, Math.min(limit, positions[i + 1]));
     positions[i + 2] = Math.max(-limit, Math.min(limit, positions[i + 2]));
   }
-
   // Actualiza la geometría
   particleGeometry.attributes.position.needsUpdate = true;
 }
@@ -427,8 +511,8 @@ function updateParticles() {
         winElement.textContent = ``
         }
 
-         
-
+        moverEnemigo(); // Llama a la función para mover al enemigo
+        detectarColisiones(); // Llama a la función para detectar colisiones
          //Particulas para que se muevan
         updateParticles();
       }
