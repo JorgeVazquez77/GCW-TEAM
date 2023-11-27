@@ -105,9 +105,22 @@
         padding: 5px;
           }
     </style>
-
+<script src="Boos_Horror_Castle_Mario_Party_9_Music_Extended.mp3"></script>
   </head>
   <body>
+    <audio id="itemCollisionSound">
+      <source src="videoplayback.mp3" type="audio/mpeg">
+      Tu navegador no soporta el elemento de audio.
+    </audio>
+    <audio id="backgroundMusic" loop>
+      <source src="Boos_Horror_Castle_Mario_Party_9_Music_Extended.mp3" type="audio/mpeg">
+      Tu navegador no soporta el elemento de audio.
+    </audio>
+    <audio id="collisionSound">
+      <source src="videoplayback (2).mp3" type="audio/mpeg">
+      Tu navegador no soporta el elemento de audio.
+    </audio>
+
     <div id="timer-container">Tiempo restante: <span id="countdown">10</span> segundos</div>
     <div id="coordinates">Coordenadas: (0, 0, 0)</div>
     <div class="button-container">
@@ -151,7 +164,12 @@ const firebaseConfig = {
   messagingSenderId: "666615755785",
   appId: "1:666615755785:web:97365a60650d454e7db4d8"
 };
-
+window.addEventListener('DOMContentLoaded', (event) => {
+  const backgroundMusic = document.getElementById('backgroundMusic');
+  if (backgroundMusic.paused) {
+    backgroundMusic.play();
+  }
+});
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
@@ -298,13 +316,102 @@ const app = initializeApp(firebaseConfig);
           z: positionZ,
         });
       }
+//ENEMIGOS AUI/////////////////////////////////////////////////////////  
+// Al crear un enemigo (dentro del código que agrega enemigos)
+function agregarEnemigo() {
+  const loaderGLTF = new GLTFLoader();
+  loaderGLTF.load("fantasma_ghost_phantom.glb", function (modelGLTF) {
+    const enemigo = modelGLTF.scene;
+    enemigo.scale.set(2,2,2);
+    enemigo.position.set(35, 0, -45);
+    enemigo.castShadow = true;  
+    enemigo.name = "enemigo"; // Dales un nombre para identificarlos fácilmente
+    scene.add(enemigo);
+  });
+  //enemigo 2 
 
+}
+const puntosDeRecorrido = [
+  new THREE.Vector3(-10, 0, -10),
+  new THREE.Vector3(10, 0, -10),
+  new THREE.Vector3(10, 0, 10),
+  new THREE.Vector3(-10, 0, 10)
+];
+let puntoActual = 0;
+
+function moverEnemigo() {
+  const enemigo = scene.getObjectByName("enemigo");
+  const jugador = scene.getObjectByName(currentUser.uid);
+
+  const direccion = new THREE.Vector3();
+  direccion.subVectors(jugador.position, enemigo.position).normalize();
+  enemigo.position.add(direccion.multiplyScalar(0.050)); // Ajusta el valor para la velocidad del enemigo
+}
+let vida = 100; // Vida inicial del jugador
+
+// Detección de colisiones en el bucle de animación
+function detectarColisiones() {
+  const jugador = scene.getObjectByName(currentUser.uid);
+  const enemigo = scene.getObjectByName("enemigo");
+
+  const cuboRojo = scene.getObjectByName("masContador");
+  
+  const jugadorBox = new THREE.Box3().setFromObject(jugador);
+  const enemigoBox = new THREE.Box3().setFromObject(enemigo);
+
+  if (jugadorBox.intersectsBox(enemigoBox)) {
+    const collisionSound = document.getElementById('collisionSound');
+    collisionSound.play();
+
+    vida -= 0.050; // Reducir la vida en 10 (o la cantidad que prefieras)
+    const vidaElement = document.getElementById("life");
+    vidaElement.textContent = `Vida: ${vida}`;
+
+    if (vida <= 0) {
+      const loseElement = document.getElementById("lose");
+      loseElement.textContent = "¡Perdiste!";
+      const vidaCeroSound = new Audio('Game over (juego arcade) - Efecto de sonido [Para descargar].mp3');
+      vidaCeroSound.play();
+      // Redireccionar después de cierto tiempo
+      setTimeout(() => {
+        window.location.href = 'DIFICULTADmulti.HTML';
+      }, 2000); // Redirige después de 3 segundos (o el tiempo que quieras)
+    }
+  }
+}
+// Función para incrementar el contador
+let contador = 0;
+
+function incrementarContador() {
+  contador++;
+  const contadorElement = document.getElementById("counter");
+  contadorElement.textContent = `Contador: ${contador}`;
+  verificarGanador();
+}
+function verificarGanador() {
+  if (contador >= 10) {
+    const winElement = document.getElementById('win');
+    winElement.textContent = '¡Ganaste!';
+    winElement.style.color = 'lightgreen'; // Cambia el color del texto a verde
+
+    const audioGanar = new Audio('videoplayback (3).mp3');
+    audioGanar.play(); // Reproduce el sonido de ganar
+
+    // Cambié los tiempos de espera para garantizar la duración del mensaje
+    setTimeout(() => {
+      // Redireccionar a la otra página después de 5 segundos (5000 milisegundos)
+      window.location.href = 'DIFICULTADmulti.HTML';
+    }, 5000); // Redireccionar después de 5 segundos (5000 milisegundos)
+  }
+}
+
+agregarEnemigo();
 //TIMER
 //=================================================================================================================================================================================================
 
 const countdownElement = document.getElementById("countdown");
       
-      let remainingTime = 10; // Tiempo en segundos para la cuenta regresiva
+      let remainingTime = 1000; // Tiempo en segundos para la cuenta regresiva
       function updateTimer() {
         remainingTime -= 0.1; // Reducir el tiempo en 0.01 segundos (ajusta según lo desees)
         if (remainingTime < 0) {
@@ -318,6 +425,75 @@ const countdownElement = document.getElementById("countdown");
       }
       updateTimer(); 
 
+//ITEMS
+//
+function agregarItems() {
+  agregarItem('masTiempo', '#00FF00', -10, 0, 10); // Item para dar más tiempo Cubo verde
+  agregarItem('masVelocidad', '#FFA500', 0, 0, -10); // Item para moverse más rápido cubo naranja
+  agregarItem('masContador', '#FF0000', 20, 0, 0); // Item para aumentar el contador cubo rojo 
+  agregarItem('masContador', '#FF0000', -20, 0, 10); // Segundo cubo rojo
+  agregarItem('masContador', '#FF0000', -5, 0, -5);
+}
+// Función para agregar un cubo como item con diferentes funcionalidades
+function agregarItem(nombre, color, x, y, z) {
+  const geometry = new THREE.BoxGeometry(2, 2, 2);
+  const material = new THREE.MeshStandardMaterial({ color });
+  const item = new THREE.Mesh(geometry, material);
+  item.position.set(x, y, z);
+  item.name = nombre;
+  scene.add(item);
+}
+function detectarColisionesConItems() {
+  const jugador = scene.getObjectByName(currentUser.uid);
+  const items = ["masTiempo", "masVelocidad", "masContador"]; // Nombres de los items
+
+  items.forEach((nombre) => {
+    const item = scene.getObjectByName(nombre);
+    if (item) {
+      const jugadorBox = new THREE.Box3().setFromObject(jugador);
+      const itemBox = new THREE.Box3().setFromObject(item);
+
+      if (jugadorBox.intersectsBox(itemBox)) {
+        const itemCollisionSound = document.getElementById('itemCollisionSound');
+        itemCollisionSound.play();
+        // Ejecutar funcionalidad del item
+        switch (nombre) {
+          case "masTiempo":
+            aumentarTiempo(200); // Aumentar el tiempo en 5 segundos
+            break;
+          case "masVelocidad":
+            moverseMasRapido(1.5); // Aumentar la velocidad del jugador
+            break;
+          case "masContador":
+          verificarGanador();
+            aumentarContador(5); // Aumentar el contador en 3
+            break;
+          default:
+            break;
+        }
+
+        scene.remove(item); // Eliminar el item al ser recogido
+      }
+    }
+  });
+}
+
+// Función para aumentar el tiempo
+function aumentarTiempo(segundos) {
+  remainingTime += segundos;
+}
+
+// Función para moverse más rápido
+function moverseMasRapido() {
+  // Lógica para aumentar la velocidad del jugador
+}
+
+// Función para aumentar el contador
+function aumentarContador(valor) {
+  contador += valor;
+  const contadorElement = document.getElementById("counter");
+  contadorElement.textContent = `Contador: ${contador}`;
+}
 //TAMAÑO DE LA PANTALLA
 //================================================================================================================================================================================================= 
       
@@ -333,34 +509,33 @@ const countdownElement = document.getElementById("countdown");
 //CONTROLES      
 //=================================================================================================================================================================================================
    
-      document.onkeydown = function (e) {
-        const jugadorActual = scene.getObjectByName(currentUser.uid);
-
-        if (e.keyCode == 37) {
-          jugadorActual.position.x -= 1;
-        }
-
-        if (e.keyCode == 39) {
-          jugadorActual.position.x += 1;
-        }
-
-        if (e.keyCode == 38) {
-          jugadorActual.position.z -= 1;
-        }
-
-        if (e.keyCode == 40) {
-          jugadorActual.position.z += 1;
-        }
-
-        writeUserData(
-          currentUser.uid,
-          jugadorActual.position.x,
-          jugadorActual.position.z
-        );
-      };
+document.onkeydown = function (e) {
+  const jugadorActual = scene.getObjectByName(currentUser.uid);
+  switch(e.keyCode) {
+    case 37: // Izquierda
+      jugadorActual.position.x -= 1;
+      break;
+    case 39: // Derecha
+      jugadorActual.position.x += 1;
+      break;
+    case 38: // Arriba
+      jugadorActual.position.z -= 1;
+      break;
+    case 40: // Abajo
+      jugadorActual.position.z += 1;
+      break;
+    default:
+      break;
+  }
+  writeUserData(
+    currentUser.uid,
+    jugadorActual.position.x,
+    jugadorActual.position.z
+  );
+};
 
       scene.add(plane);
-
+      agregarItems();
       const cameraControl = new OrbitControls(camera, renderer.domElement);
 //Particulas
 //=================================================================================================================================================================================================
@@ -393,20 +568,18 @@ scene.add(particleSystem);
 // Función para actualizar las posiciones de las partículas
 function updateParticles() {
   const positions = particleGeometry.attributes.position.array;
+  const limit = 1000;
 
   for (let i = 0; i < positions.length; i += 3) {
-    // Modifica las posiciones para el movimiento
-    positions[i] += 0.1 * (Math.random() - 0.90); // Ajusta la velocidad según sea necesario
+    positions[i] += 0.1 * (Math.random() - 0.90);
     positions[i + 1] += 0.1 * (Math.random() - 0.8);
     positions[i + 2] += 0.1 * (Math.random() - 0.6);
 
-    // Límites para que las partículas no se alejen demasiado
-    const limit = 100;
+    // Limitar las posiciones para evitar valores extremos
     positions[i] = Math.max(-limit, Math.min(limit, positions[i]));
     positions[i + 1] = Math.max(0, Math.min(limit, positions[i + 1]));
     positions[i + 2] = Math.max(-limit, Math.min(limit, positions[i + 2]));
   }
-
   // Actualiza la geometría
   particleGeometry.attributes.position.needsUpdate = true;
 }
@@ -421,14 +594,19 @@ function updateParticles() {
         if (remainingTime==0){
         const winElement = document.getElementById('timeover');
         winElement.textContent = `¡SE ACABO EL TIEMPO!`
-        }else{
+       
+    // Redireccionar a DIFICULTADmulti.HTML
+   setTimeout(() => {
+    window.location.href = 'DIFICULTADmulti.HTML';
+  }, 3000);
+        }/* else{
 
         const winElement = document.getElementById('win');
         winElement.textContent = ``
-        }
-
-         
-
+        } */
+        detectarColisionesConItems();
+        moverEnemigo(); // Llama a la función para mover al enemigo
+        detectarColisiones(); // Llama a la función para detectar colisiones
          //Particulas para que se muevan
         updateParticles();
       }
