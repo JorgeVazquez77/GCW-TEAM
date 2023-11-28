@@ -175,8 +175,8 @@
         audioLoader.load('Boos_Horror_Castle_Mario_Party_9_Music_Extended.mp3', function (buffer) {
             sound.setBuffer(buffer);
             sound.setLoop(true);
-            sound.setVolume(0.2); // Ajusta el volumen como desees
-            //sound.play();
+            sound.setVolume(0.1); // Ajusta el volumen como desees
+            sound.play();
         });
 //Particulas
 //=================================================================================================================================================================================================
@@ -253,11 +253,11 @@ function updateParticles() {
   const jugador = scene.getObjectByName("player");
               const loaderGLTF = new GLTFLoader();
               loaderGLTF.load(
-                "fantasma_ghost_phantom.glb",
+                "Bot.glb",
                 function (modelGLTF) {
                   const obj = modelGLTF.scene;
-                  obj.scale.set(3,3,3);
-                  obj.position.set(10, 0, 0);
+                  obj.scale.set(.002,.002,.002);
+                  obj.position.set(10, 5, 0);
                   obj.name="player";
                   obj.castShadow = true;
                   scene.add(obj);                  
